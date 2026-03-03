@@ -35,13 +35,11 @@
       color: var(--text);
       line-height: 1.65;
       overflow-x: hidden;
+      padding-bottom: 76px;
     }
 
     /* ─── NAV ─── */
     nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
       background: rgba(7,16,31,0.9);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
@@ -184,6 +182,131 @@
     }
 
     .hero-ctas { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+
+    /* Hero store buttons */
+    .hero-store-btns { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+
+    .hero-store-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 0.75rem 1.3rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: background 0.2s, border-color 0.2s;
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .hero-store-btn:hover {
+      background: rgba(66,153,225,0.12);
+      border-color: var(--blue-lt);
+    }
+
+    .hero-store-btn svg {
+      width: 26px; height: 26px;
+      fill: var(--blue-lt);
+      flex-shrink: 0;
+    }
+
+    .hero-store-btn-info small { display: block; font-size: 0.68rem; color: var(--muted); }
+    .hero-store-btn-info strong { display: block; font-size: 0.92rem; font-weight: 700; }
+
+    /* ─── STICKY FOOTER ─── */
+    .sticky-footer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 110;
+      background: rgba(7,16,31,0.95);
+      backdrop-filter: blur(24px);
+      border-top: 1px solid var(--border);
+      padding: 0.85rem 5%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .sticky-dl-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: var(--blue-bright);
+      color: #fff;
+      font-family: 'Heebo', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      border-radius: 50px;
+      padding: 0.8rem 2.5rem;
+      cursor: pointer;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 4px 24px var(--blue-glow);
+      transition: background 0.2s, transform 0.2s;
+      text-decoration: none;
+    }
+
+    .sticky-dl-btn:hover {
+      background: var(--blue-lt);
+      transform: translateY(-1px);
+    }
+
+    /* ─── STORE POPUP ─── */
+    .store-popup {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .store-popup.open { display: flex; }
+
+    .store-popup-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(6px);
+    }
+
+    .store-popup-sheet {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px 24px 0 0;
+      border-bottom: none;
+      padding: 1.8rem 1.5rem 3rem;
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .store-popup-title {
+      text-align: center;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+    }
+
+    .store-popup-close {
+      position: absolute;
+      top: 1rem; left: 1rem;
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: var(--blue-dim);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
 
     /* Hero visual – screenshot carousel */
     .hero-visual {
@@ -832,9 +955,21 @@
       <p class="hero-sub">
         לומי היא אפליקציה ייחודית לפירוש חלומות המשלבת פסיכולוגיה מודרנית, קבלה, חז"ל ועוד — כדי שתוכלו להבין את המשמעות הנסתרת של חלומותיכם.
       </p>
-      <div class="hero-ctas">
-        <a href="#cta" class="btn btn-primary btn-lg">הורד עכשיו — חינם</a>
-        <a href="#screenshots" class="btn btn-ghost btn-lg">צפה בתמונות</a>
+      <div class="hero-store-btns">
+        <a href="https://apps.apple.com/il/app/lumi-dreams-and-meaning/id6752386485" class="hero-store-btn" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          <div class="hero-store-btn-info">
+            <small>הורד מ-</small>
+            <strong>App Store</strong>
+          </div>
+        </a>
+        <a href="https://play.google.com/store/apps/details?id=com.mediastream.lumi" class="hero-store-btn" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M3.18 23.76c.3.17.65.19.98.08L14.93 12 3.18.16c-.33-.11-.68-.09-.98.08C1.86.63 1.5 1.22 1.5 1.88v20.24c0 .66.36 1.25.68.64zM16.54 10.39l-2.6-2.6L5.7.55l11.18 6.45 2.33 1.35-2.67 2.04zM5.7 23.45l8.24-7.24 2.6-2.6 2.67 2.04-2.33 1.35L5.7 23.45zM20.34 10.97l-1.63-.94-2.17 1.97 2.17 1.97 1.63-.94c.78-.45.78-1.61 0-2.06z"/></svg>
+          <div class="hero-store-btn-info">
+            <small>הורד מ-</small>
+            <strong>Google Play</strong>
+          </div>
+        </a>
       </div>
     </div>
 
@@ -1197,7 +1332,7 @@
       <p>הורידו את לומי עכשיו. 7 ימי ניסיון חינם — לאחר מכן מנוי חודשי במחיר נגיש הכולל גישה מלאה לכל אסכולות הפרשנות.</p>
     </div>
     <div class="cta-actions">
-      <a href="#" class="store-btn">
+      <a href="https://apps.apple.com/il/app/lumi-dreams-and-meaning/id6752386485" class="store-btn" target="_blank" rel="noopener">
         <div class="store-btn-icon">
           <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
         </div>
@@ -1206,7 +1341,7 @@
           <strong>App Store</strong>
         </div>
       </a>
-      <a href="#" class="store-btn">
+      <a href="https://play.google.com/store/apps/details?id=com.mediastream.lumi" class="store-btn" target="_blank" rel="noopener">
         <div class="store-btn-icon">
           <svg viewBox="0 0 24 24"><path d="M3.18 23.76c.3.17.65.19.98.08L14.93 12 3.18.16c-.33-.11-.68-.09-.98.08C1.86.63 1.5 1.22 1.5 1.88v20.24c0 .66.36 1.25.68.64zM16.54 10.39l-2.6-2.6L5.7.55l11.18 6.45 2.33 1.35-2.67 2.04zM5.7 23.45l8.24-7.24 2.6-2.6 2.67 2.04-2.33 1.35L5.7 23.45zM20.34 10.97l-1.63-.94-2.17 1.97 2.17 1.97 1.63-.94c.78-.45.78-1.61 0-2.06z"/></svg>
         </div>
@@ -1235,6 +1370,35 @@
   </div>
 </footer>
 
+<!-- ══ STICKY FOOTER ══ -->
+<div class="sticky-footer">
+  <button class="sticky-dl-btn" id="sticky-dl-btn" onclick="handleDownload()">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    להורדה בחינם
+  </button>
+</div>
+
+<!-- ══ STORE POPUP (desktop fallback) ══ -->
+<div class="store-popup" id="store-popup">
+  <div class="store-popup-backdrop" onclick="closeStorePopup()"></div>
+  <div class="store-popup-sheet">
+    <button class="store-popup-close" onclick="closeStorePopup()">✕</button>
+    <p class="store-popup-title">בחרו את החנות שלכם</p>
+    <a href="https://apps.apple.com/il/app/lumi-dreams-and-meaning/id6752386485" class="store-btn" target="_blank" rel="noopener" onclick="closeStorePopup()">
+      <div class="store-btn-icon">
+        <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      </div>
+      <div class="store-btn-info"><small>הורד מ-</small><strong>App Store</strong></div>
+    </a>
+    <a href="https://play.google.com/store/apps/details?id=com.mediastream.lumi" class="store-btn" target="_blank" rel="noopener" onclick="closeStorePopup()">
+      <div class="store-btn-icon">
+        <svg viewBox="0 0 24 24"><path d="M3.18 23.76c.3.17.65.19.98.08L14.93 12 3.18.16c-.33-.11-.68-.09-.98.08C1.86.63 1.5 1.22 1.5 1.88v20.24c0 .66.36 1.25.68.64zM16.54 10.39l-2.6-2.6L5.7.55l11.18 6.45 2.33 1.35-2.67 2.04zM5.7 23.45l8.24-7.24 2.6-2.6 2.67 2.04-2.33 1.35L5.7 23.45zM20.34 10.97l-1.63-.94-2.17 1.97 2.17 1.97 1.63-.94c.78-.45.78-1.61 0-2.06z"/></svg>
+      </div>
+      <div class="store-btn-info"><small>הורד מ-</small><strong>Google Play</strong></div>
+    </a>
+  </div>
+</div>
+
 <!-- ══ LIGHTBOX ══ -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <button class="lightbox-close" onclick="closeLightbox()">✕</button>
@@ -1251,6 +1415,28 @@
     document.getElementById('lightbox').classList.remove('open');
   }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  // Smart download — detect device and redirect to correct store
+  const IOS_URL     = 'https://apps.apple.com/il/app/lumi-dreams-and-meaning/id6752386485';
+  const ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.mediastream.lumi';
+
+  function getDeviceStore() {
+    const ua = navigator.userAgent || '';
+    if (/iphone|ipad|ipod/i.test(ua)) return 'ios';
+    if (/android/i.test(ua))          return 'android';
+    return 'desktop';
+  }
+
+  function handleDownload() {
+    const device = getDeviceStore();
+    if (device === 'ios')     window.open(IOS_URL, '_blank');
+    else if (device === 'android') window.open(ANDROID_URL, '_blank');
+    else openStorePopup();
+  }
+
+  function openStorePopup()  { document.getElementById('store-popup').classList.add('open'); }
+  function closeStorePopup() { document.getElementById('store-popup').classList.remove('open'); }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeStorePopup(); });
 
   // Vimeo — autoplay muted, click to toggle sound
   const vimeoWrap = document.getElementById('vimeo-wrap');
