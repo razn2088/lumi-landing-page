@@ -221,6 +221,48 @@
       display: block;
     }
 
+    .vimeo-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 9/16;
+      cursor: pointer;
+    }
+
+    .vimeo-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .mute-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 1.2rem;
+      z-index: 2;
+      transition: opacity 0.3s;
+    }
+
+    .mute-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      padding: 0.35rem 0.9rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: 'Heebo', sans-serif;
+      backdrop-filter: blur(8px);
+      pointer-events: none;
+    }
+
     /* ─── STATS BAR ─── */
     .stats-bar {
       border-top: 1px solid var(--border);
@@ -738,7 +780,6 @@
     /* ─── RESPONSIVE ─── */
     @media (max-width: 768px) {
       .hero { grid-template-columns: 1fr; min-height: auto; padding-top: 3rem; }
-      .hero-visual { order: -1; }
       .hero-screen { width: 200px; }
       .features-grid { grid-template-columns: 1fr; }
       .how-grid { grid-template-columns: 1fr; }
@@ -799,9 +840,24 @@
 
     <div class="hero-visual">
       <div class="hero-screen">
-        <video autoplay muted loop playsinline>
-          <source src="images/lumi-demo.mp4" type="video/mp4" />
-        </video>
+        <div class="vimeo-wrap" id="vimeo-wrap">
+          <iframe
+            id="vimeo-player"
+            src="https://player.vimeo.com/video/1170047413?autoplay=1&muted=1&loop=1&background=1&autopause=0"
+            frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+          <div class="mute-overlay" id="mute-overlay">
+            <div class="mute-badge">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+              </svg>
+              לחץ להפעלת שמע
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1185,6 +1241,7 @@
   <img id="lightbox-img" src="" alt="" />
 </div>
 
+<script src="https://player.vimeo.com/api/player.js"></script>
 <script>
   function openLightbox(src) {
     document.getElementById('lightbox-img').src = src;
@@ -1194,6 +1251,20 @@
     document.getElementById('lightbox').classList.remove('open');
   }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  // Vimeo — autoplay muted, click to unmute
+  const vimeoWrap = document.getElementById('vimeo-wrap');
+  const muteOverlay = document.getElementById('mute-overlay');
+  if (vimeoWrap && muteOverlay) {
+    const player = new Vimeo.Player('vimeo-player');
+    vimeoWrap.addEventListener('click', async () => {
+      try {
+        await player.setMuted(false);
+        muteOverlay.style.opacity = '0';
+        setTimeout(() => { muteOverlay.style.display = 'none'; }, 300);
+      } catch(e) {}
+    });
+  }
 </script>
 
 </body>
