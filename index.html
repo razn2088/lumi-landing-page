@@ -254,51 +254,37 @@
       transform: translateY(-1px);
     }
 
-    /* ─── STORE POPUP ─── */
-    .store-popup {
+    /* ─── MODALS (QR / Privacy / Terms) ─── */
+    .modal-overlay {
       position: fixed;
       inset: 0;
       z-index: 200;
       display: none;
-      align-items: flex-end;
+      align-items: center;
       justify-content: center;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      padding: 1.5rem;
     }
 
-    .store-popup.open { display: flex; }
+    .modal-overlay.open { display: flex; }
 
-    .store-popup-backdrop {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.65);
-      backdrop-filter: blur(6px);
-    }
-
-    .store-popup-sheet {
+    .modal-box {
       position: relative;
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 24px 24px 0 0;
-      border-bottom: none;
-      padding: 1.8rem 1.5rem 3rem;
+      border-radius: 24px;
+      padding: 2rem 1.8rem 2.2rem;
       width: 100%;
-      max-width: 480px;
-      display: flex;
-      flex-direction: column;
-      gap: 0.9rem;
+      max-width: 500px;
+      max-height: 85vh;
+      overflow-y: auto;
     }
 
-    .store-popup-title {
-      text-align: center;
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--muted);
-      margin-bottom: 0.3rem;
-    }
-
-    .store-popup-close {
+    .modal-close {
       position: absolute;
       top: 1rem; left: 1rem;
-      width: 30px; height: 30px;
+      width: 32px; height: 32px;
       border-radius: 50%;
       background: var(--blue-dim);
       border: 1px solid var(--border);
@@ -307,6 +293,70 @@
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
     }
+
+    .modal-title {
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+    }
+
+    /* QR grid */
+    .qr-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .qr-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .qr-item img {
+      width: 150px; height: 150px;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      background: #fff;
+      padding: 6px;
+    }
+
+    .qr-store-label {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .qr-store-label svg { width: 20px; height: 20px; fill: var(--blue-lt); flex-shrink: 0; }
+
+    .qr-or-link {
+      font-size: 0.75rem;
+      color: var(--blue-lt);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    /* Legal text */
+    .legal-text {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.8;
+      white-space: pre-wrap;
+    }
+
+    .legal-text h3 {
+      color: var(--text);
+      font-size: 1rem;
+      margin: 1.2rem 0 0.4rem;
+    }
+
+    /* Store popup — kept for mobile bottom-sheet on desktop (replaced by modal) */
+    .store-popup { display: none; }
 
     /* Hero visual – screenshot carousel */
     .hero-visual {
@@ -418,15 +468,7 @@
     .section-inner { max-width: var(--max); margin: 0 auto; }
     .section-header { margin-bottom: 3rem; }
 
-    .eyebrow {
-      display: inline-block;
-      color: var(--blue-lt);
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 0.6rem;
-    }
+    .eyebrow { display: none; }
 
     .section-title {
       font-size: clamp(1.7rem, 3.5vw, 2.5rem);
@@ -1361,11 +1403,10 @@
       <img src="images/icon.jpg" alt="Lumi" />
       Lumi
     </a>
-    <p>© 2025 לומי — תיעוד ופירוש חלומות. כל הזכויות שמורות.</p>
+    <p>© 2026 לומי — תיעוד ופירוש חלומות. כל הזכויות שמורות.</p>
     <ul class="footer-links">
-      <li><a href="#">פרטיות</a></li>
-      <li><a href="#">תנאי שימוש</a></li>
-      <li><a href="#">צור קשר</a></li>
+      <li><a href="#" onclick="openModal('privacy-modal');return false;">פרטיות</a></li>
+      <li><a href="#" onclick="openModal('terms-modal');return false;">תנאי שימוש</a></li>
     </ul>
   </div>
 </footer>
@@ -1378,24 +1419,47 @@
   </button>
 </div>
 
-<!-- ══ STORE POPUP (desktop fallback) ══ -->
-<div class="store-popup" id="store-popup">
-  <div class="store-popup-backdrop" onclick="closeStorePopup()"></div>
-  <div class="store-popup-sheet">
-    <button class="store-popup-close" onclick="closeStorePopup()">✕</button>
-    <p class="store-popup-title">בחרו את החנות שלכם</p>
-    <a href="https://apps.apple.com/il/app/lumi-dreams-and-meaning/id6752386485" class="store-btn" target="_blank" rel="noopener" onclick="closeStorePopup()">
-      <div class="store-btn-icon">
-        <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+<!-- ══ QR MODAL (desktop) ══ -->
+<div class="modal-overlay" id="qr-modal" onclick="handleModalClick(event,'qr-modal')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('qr-modal')">✕</button>
+    <p class="modal-title">סרקו להורדת לומי</p>
+    <div class="qr-grid">
+      <div class="qr-item">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https%3A%2F%2Fapps.apple.com%2Fil%2Fapp%2Flumi-dreams-and-meaning%2Fid6752386485" alt="App Store QR" />
+        <div class="qr-store-label">
+          <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          App Store
+        </div>
+        <a href="https://apps.apple.com/il/app/lumi-dreams-and-meaning/id6752386485" class="qr-or-link" target="_blank" rel="noopener">פתח ישירות ←</a>
       </div>
-      <div class="store-btn-info"><small>הורד מ-</small><strong>App Store</strong></div>
-    </a>
-    <a href="https://play.google.com/store/apps/details?id=com.mediastream.lumi" class="store-btn" target="_blank" rel="noopener" onclick="closeStorePopup()">
-      <div class="store-btn-icon">
-        <svg viewBox="0 0 24 24"><path d="M3.18 23.76c.3.17.65.19.98.08L14.93 12 3.18.16c-.33-.11-.68-.09-.98.08C1.86.63 1.5 1.22 1.5 1.88v20.24c0 .66.36 1.25.68.64zM16.54 10.39l-2.6-2.6L5.7.55l11.18 6.45 2.33 1.35-2.67 2.04zM5.7 23.45l8.24-7.24 2.6-2.6 2.67 2.04-2.33 1.35L5.7 23.45zM20.34 10.97l-1.63-.94-2.17 1.97 2.17 1.97 1.63-.94c.78-.45.78-1.61 0-2.06z"/></svg>
+      <div class="qr-item">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.mediastream.lumi" alt="Google Play QR" />
+        <div class="qr-store-label">
+          <svg viewBox="0 0 24 24"><path d="M3.18 23.76c.3.17.65.19.98.08L14.93 12 3.18.16c-.33-.11-.68-.09-.98.08C1.86.63 1.5 1.22 1.5 1.88v20.24c0 .66.36 1.25.68.64zM16.54 10.39l-2.6-2.6L5.7.55l11.18 6.45 2.33 1.35-2.67 2.04zM5.7 23.45l8.24-7.24 2.6-2.6 2.67 2.04-2.33 1.35L5.7 23.45zM20.34 10.97l-1.63-.94-2.17 1.97 2.17 1.97 1.63-.94c.78-.45.78-1.61 0-2.06z"/></svg>
+          Google Play
+        </div>
+        <a href="https://play.google.com/store/apps/details?id=com.mediastream.lumi" class="qr-or-link" target="_blank" rel="noopener">פתח ישירות ←</a>
       </div>
-      <div class="store-btn-info"><small>הורד מ-</small><strong>Google Play</strong></div>
-    </a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PRIVACY MODAL ══ -->
+<div class="modal-overlay" id="privacy-modal" onclick="handleModalClick(event,'privacy-modal')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('privacy-modal')">✕</button>
+    <p class="modal-title">מדיניות פרטיות</p>
+    <div class="legal-text" id="privacy-text">טוען...</div>
+  </div>
+</div>
+
+<!-- ══ TERMS MODAL ══ -->
+<div class="modal-overlay" id="terms-modal" onclick="handleModalClick(event,'terms-modal')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('terms-modal')">✕</button>
+    <p class="modal-title">תנאי שימוש</p>
+    <div class="legal-text" id="terms-text">טוען...</div>
   </div>
 </div>
 
@@ -1429,14 +1493,17 @@
 
   function handleDownload() {
     const device = getDeviceStore();
-    if (device === 'ios')     window.open(IOS_URL, '_blank');
+    if (device === 'ios')          window.open(IOS_URL, '_blank');
     else if (device === 'android') window.open(ANDROID_URL, '_blank');
-    else openStorePopup();
+    else openModal('qr-modal');
   }
 
-  function openStorePopup()  { document.getElementById('store-popup').classList.add('open'); }
-  function closeStorePopup() { document.getElementById('store-popup').classList.remove('open'); }
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeStorePopup(); });
+  function openModal(id)  { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+  function handleModalClick(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') ['qr-modal','privacy-modal','terms-modal'].forEach(closeModal);
+  });
 
   // Vimeo — autoplay muted, click to toggle sound
   const vimeoWrap = document.getElementById('vimeo-wrap');
