@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>לומי – תיעוד ופירוש חלומות | יומן חלומות, חלימה צלולה וצ'אט מומחה</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #07101f;
+      --bg-card:    #0d1b2e;
+      --bg-mid:     #0a1525;
+      --blue:       #2b6cb0;
+      --blue-lt:    #63b3ed;
+      --blue-bright:#4299e1;
+      --blue-dim:   rgba(66,153,225,0.12);
+      --blue-glow:  rgba(66,153,225,0.28);
+      --navy:       #1a3a5c;
+      --text:       #eef4ff;
+      --muted:      #7ea8cc;
+      --border:     rgba(66,153,225,0.18);
+      --radius:     16px;
+      --max:        1060px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7,16,31,0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 5%;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--text);
+      text-decoration: none;
+      flex-shrink: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo img {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.8rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--blue-lt); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Heebo', sans-serif;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--blue-bright);
+      color: #fff;
+      padding: 0.65rem 1.6rem;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 20px var(--blue-glow);
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-lt);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 28px var(--blue-glow);
+    }
+
+    .btn-lg { padding: 0.9rem 2.2rem; font-size: 1.05rem; border-radius: 50px; }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      padding: 0.65rem 1.5rem;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-ghost:hover { border-color: var(--blue-lt); background: var(--blue-dim); }
+
+    /* ─── HERO ─── */
+    .hero {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 4.5rem 5% 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+      min-height: calc(100vh - 68px);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--blue-dim);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 0.3rem 1rem;
+      font-size: 0.82rem;
+      color: var(--blue-lt);
+      font-weight: 600;
+      margin-bottom: 1.4rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+      font-weight: 900;
+      line-height: 1.12;
+      margin-bottom: 1.2rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(120deg, var(--blue-lt), #90cdf4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      font-weight: 400;
+      max-width: 420px;
+      margin-bottom: 2rem;
+      line-height: 1.75;
+    }
+
+    .hero-ctas { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+
+    /* Hero visual – screenshot carousel */
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .hero-visual::before {
+      content: '';
+      position: absolute;
+      width: 420px; height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(66,153,225,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-screen {
+      width: 260px;
+      border-radius: 36px;
+      overflow: hidden;
+      border: 2px solid rgba(66,153,225,0.3);
+      box-shadow:
+        0 0 0 8px rgba(66,153,225,0.05),
+        0 30px 80px rgba(0,0,0,0.6),
+        0 0 50px rgba(66,153,225,0.12);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-screen img,
+    .hero-screen video {
+      width: 100%;
+      display: block;
+    }
+
+    /* ─── STATS BAR ─── */
+    .stats-bar {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-mid);
+    }
+
+    .stats-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 2rem 5%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .stat { text-align: center; padding: 0.5rem; }
+
+    .stat-num {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--blue-lt);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-label { font-size: 0.9rem; color: var(--muted); font-weight: 500; }
+
+    /* ─── SHARED ─── */
+    .section { padding: 5.5rem 5%; }
+    .section-inner { max-width: var(--max); margin: 0 auto; }
+    .section-header { margin-bottom: 3rem; }
+
+    .eyebrow {
+      display: inline-block;
+      color: var(--blue-lt);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.7rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 0.7rem;
+      letter-spacing: -0.02em;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 480px;
+      line-height: 1.7;
+    }
+
+    /* ─── SCREENSHOTS STRIP ─── */
+    .screenshots-bg { background: var(--bg-mid); }
+
+    .screenshots-scroll-wrap {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .screenshots-scroll-wrap::before,
+    .screenshots-scroll-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 80px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .screenshots-scroll-wrap::before {
+      right: 0;
+      background: linear-gradient(to left, var(--bg-mid), transparent);
+    }
+
+    .screenshots-scroll-wrap::after {
+      left: 0;
+      background: linear-gradient(to right, var(--bg-mid), transparent);
+    }
+
+    .screenshots-track {
+      display: flex;
+      gap: 1.4rem;
+      overflow-x: auto;
+      padding: 1rem 2rem 2rem;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .screenshots-track::-webkit-scrollbar { display: none; }
+
+    .screenshot-item {
+      flex-shrink: 0;
+      width: 200px;
+      scroll-snap-align: start;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1.5px solid rgba(66,153,225,0.2);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+      transition: transform 0.3s, border-color 0.3s;
+      cursor: pointer;
+    }
+
+    .screenshot-item:hover {
+      transform: translateY(-6px) scale(1.02);
+      border-color: rgba(66,153,225,0.5);
+    }
+
+    .screenshot-item img { width: 100%; display: block; }
+
+    .screenshot-caption {
+      background: var(--bg-card);
+      padding: 0.6rem 0.8rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* ─── FEATURES ─── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .feat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.8rem;
+      display: flex;
+      gap: 1.2rem;
+      align-items: flex-start;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+
+    .feat-card:hover {
+      border-color: rgba(66,153,225,0.4);
+      transform: translateY(-3px);
+    }
+
+    .feat-icon {
+      flex-shrink: 0;
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: var(--blue-dim);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .feat-icon svg {
+      width: 22px; height: 22px;
+      stroke: var(--blue-lt);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .feat-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .feat-body p  { color: var(--muted); font-size: 0.9rem; line-height: 1.65; }
+
+    /* ─── HOW IT WORKS ─── */
+    .how-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .steps { display: flex; flex-direction: column; }
+
+    .step {
+      display: flex;
+      gap: 1.2rem;
+      padding-bottom: 2rem;
+      position: relative;
+    }
+
+    .step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 18px;
+      top: 40px; bottom: 0;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--blue-bright);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.9rem;
+      box-shadow: 0 0 18px var(--blue-glow);
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-content h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .step-content p  { color: var(--muted); font-size: 0.9rem; line-height: 1.65; }
+
+    .how-visual {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .how-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .how-card-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--blue-dim);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .how-card-icon svg {
+      width: 18px; height: 18px;
+      stroke: var(--blue-lt);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .how-card-text { font-size: 0.88rem; color: var(--muted); }
+    .how-card-text strong { display: block; color: var(--text); font-size: 0.92rem; margin-bottom: 0.1rem; }
+
+    .how-card.active {
+      border-color: rgba(66,153,225,0.45);
+      background: rgba(66,153,225,0.07);
+    }
+
+    /* ─── SCHOOLS ─── */
+    .schools-bg { background: var(--bg-mid); }
+
+    .schools-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .school-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .school-card:hover {
+      border-color: rgba(66,153,225,0.4);
+      transform: translateY(-2px);
+    }
+
+    .school-icon {
+      flex-shrink: 0;
+      width: 36px; height: 36px;
+      border-radius: 9px;
+      background: var(--blue-dim);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .school-icon svg {
+      width: 16px; height: 16px;
+      stroke: var(--blue-lt);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .school-body h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .school-body p  { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+
+    /* ─── TESTIMONIALS ─── */
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+    }
+
+    .testi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .stars { display: flex; gap: 2px; }
+    .stars svg { width: 15px; height: 15px; fill: #f6ad55; }
+
+    .testi-text { color: var(--muted); font-size: 0.92rem; line-height: 1.7; flex: 1; }
+
+    .testi-author {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+    }
+
+    .avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--blue-dim);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .avatar svg {
+      width: 18px; height: 18px;
+      stroke: var(--blue-lt);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .author-info strong { display: block; font-size: 0.88rem; font-weight: 700; }
+    .author-info span   { font-size: 0.78rem; color: var(--muted); }
+
+    /* ─── CTA ─── */
+    .cta-section { padding: 5.5rem 5%; }
+
+    .cta-box {
+      max-width: var(--max);
+      margin: 0 auto;
+      background: linear-gradient(135deg, rgba(66,153,225,0.1), rgba(43,108,176,0.06));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 4rem 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      width: 450px; height: 450px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(66,153,225,0.1) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .cta-text { position: relative; z-index: 1; }
+    .cta-text h2 {
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 900;
+      margin-bottom: 0.8rem;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .cta-text p { color: var(--muted); font-size: 1rem; }
+
+    .cta-actions {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .store-btn {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 0.9rem 1.4rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .store-btn:hover {
+      background: rgba(66,153,225,0.12);
+      border-color: var(--blue-lt);
+    }
+
+    .store-btn-icon {
+      width: 36px; height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .store-btn-icon svg { width: 26px; height: 26px; fill: var(--blue-lt); }
+    .store-btn-info small { display: block; font-size: 0.7rem; color: var(--muted); }
+    .store-btn-info strong { display: block; font-size: 1rem; font-weight: 700; }
+
+    /* ─── FOOTER ─── */
+    footer { border-top: 1px solid var(--border); }
+
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 1.8rem 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .footer-logo img { width: 24px; height: 24px; border-radius: 6px; }
+
+    footer p { font-size: 0.82rem; color: var(--muted); }
+
+    .footer-links { display: flex; gap: 1.4rem; list-style: none; }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--blue-lt); }
+
+    /* ─── LIGHTBOX ─── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+
+    .lightbox.open { display: flex; }
+
+    .lightbox img {
+      max-height: 90vh;
+      max-width: 90vw;
+      border-radius: 24px;
+      box-shadow: 0 30px 100px rgba(0,0,0,0.8);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; padding-top: 3rem; }
+      .hero-visual { order: -1; }
+      .hero-screen { width: 200px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .how-grid { grid-template-columns: 1fr; }
+      .schools-grid { grid-template-columns: repeat(2, 1fr); }
+      .testi-grid { grid-template-columns: 1fr; }
+      .cta-box { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .stats-inner { grid-template-columns: repeat(3, 1fr); }
+      footer { flex-direction: column; text-align: center; }
+      .footer-links { justify-content: center; }
+    }
+
+    @media (max-width: 480px) {
+      .schools-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <img src="images/icon.jpg" alt="Lumi" />
+      Lumi
+    </a>
+    <ul class="nav-links">
+      <li><a href="#screenshots">תמונות</a></li>
+      <li><a href="#features">יכולות</a></li>
+      <li><a href="#how">איך זה עובד</a></li>
+      <li><a href="#schools">אסכולות</a></li>
+      <li><a href="#testimonials">ביקורות</a></li>
+    </ul>
+    <a href="#cta" class="btn btn-primary">הורד בחינם</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section>
+  <div class="hero">
+    <div class="hero-text">
+      <div class="badge">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        7 ימי ניסיון חינם
+      </div>
+      <h1>
+        מה אומרים<br/>
+        <em>החלומות שלך?</em>
+      </h1>
+      <p class="hero-sub">
+        לומי היא אפליקציה ייחודית לפירוש חלומות המשלבת פסיכולוגיה מודרנית, קבלה, חז"ל ועוד — כדי שתוכלו להבין את המשמעות הנסתרת של חלומותיכם.
+      </p>
+      <div class="hero-ctas">
+        <a href="#cta" class="btn btn-primary btn-lg">הורד עכשיו — חינם</a>
+        <a href="#screenshots" class="btn btn-ghost btn-lg">צפה בתמונות</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-screen">
+        <video autoplay muted loop playsinline>
+          <source src="images/lumi-demo.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STATS ══ -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat">
+      <div class="stat-num">+50K</div>
+      <div class="stat-label">חלומות מתועדים</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">4.9★</div>
+      <div class="stat-label">דירוג באפסטור</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">10+</div>
+      <div class="stat-label">אסכולות פרשנות</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREENSHOTS ══ -->
+<section class="section screenshots-bg" id="screenshots">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="eyebrow">צילומי מסך</span>
+      <h2 class="section-title">תראו בעצמכם</h2>
+      <p class="section-sub">ממשק אינטואיטיבי, עיצוב ייחודי, וחוויה שתרצו לחזור אליה כל בוקר.</p>
+    </div>
+  </div>
+  <div class="screenshots-scroll-wrap">
+    <div class="screenshots-track">
+      <div class="screenshot-item" onclick="openLightbox('images/screen1.jpg')">
+        <img src="images/screen1.jpg" alt="מסך בית" loading="lazy" />
+        <div class="screenshot-caption">מסך בית</div>
+      </div>
+      <div class="screenshot-item" onclick="openLightbox('images/screen2.jpg')">
+        <img src="images/screen2.jpg" alt="יומן חלומות" loading="lazy" />
+        <div class="screenshot-caption">יומן חלומות</div>
+      </div>
+      <div class="screenshot-item" onclick="openLightbox('images/screen3.jpg')">
+        <img src="images/screen3.jpg" alt="תיעוד חלום" loading="lazy" />
+        <div class="screenshot-caption">תיעוד חלום</div>
+      </div>
+      <div class="screenshot-item" onclick="openLightbox('images/screen4.jpg')">
+        <img src="images/screen4.jpg" alt="טכניקות חלימה" loading="lazy" />
+        <div class="screenshot-caption">טכניקות חלימה</div>
+      </div>
+      <div class="screenshot-item" onclick="openLightbox('images/screen5.jpg')">
+        <img src="images/screen5.jpg" alt="ניתוח חלום" loading="lazy" />
+        <div class="screenshot-caption">ניתוח מעמיק</div>
+      </div>
+      <div class="screenshot-item" onclick="openLightbox('images/screen6.jpg')">
+        <img src="images/screen6.jpg" alt="צ'אט AI" loading="lazy" />
+        <div class="screenshot-caption">צ'אט עם מומחה AI</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ══ -->
+<section class="section" id="features">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="eyebrow">מה תמצאו בלומי</span>
+      <h2 class="section-title">כל הכלים להבין<br/>את עולם החלומות שלכם</h2>
+      <p class="section-sub">תיעוד, פירוש, חלימה צלולה וצ'אט עם מומחה — הכל במקום אחד.</p>
+    </div>
+    <div class="features-grid">
+
+      <div class="feat-card">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+        </div>
+        <div class="feat-body">
+          <h3>יומן חלומות אישי</h3>
+          <p>תיעוד חלומות בקלות, בכתיבה או הקלטה קולית עם תמלול אוטומטי בעברית תוך שניות.</p>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="feat-body">
+          <h3>פירוש לפי קבלה וזוהר</h3>
+          <p>פרשנות רוחנית על-פי מקורות יהודיים עתיקים — חז"ל, ספר הזוהר ותורת הסוד.</p>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="feat-body">
+          <h3>פירוש בגישות מגוונות</h3>
+          <p>פרויד, פסיכולוגיה מודרנית, תרבויות עתיקות ואסטרולוגיה — בחרו את הפרשנות שמדברת אליכם.</p>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <div class="feat-body">
+          <h3>ניתוח סמלים חוזרים</h3>
+          <p>זיהוי דפוסים, סמלים ומוטיבים מרכזיים החוזרים בחלומותיכם — כדי להבין את השפה האישית שלכם.</p>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        </div>
+        <div class="feat-body">
+          <h3>תמונה ייחודית לכל חלום</h3>
+          <p>יצירת הדמיה ויזואלית מרהיבה של כל חלום שמתועד — כמו לצייר את עולם הלא-מודע שלכם.</p>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <div class="feat-body">
+          <h3>הדרכה לחלימה צלולה</h3>
+          <p>מרכז למידה עם טכניקות, בדיקות מציאות וטיפים פרקטיים להשגת חלומות שבהם אתם מודעים לכך שאתם חולמים.</p>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="feat-body">
+          <h3>צ'אט עם מומחה חלומות</h3>
+          <p>שיחה עם מומחה מבוסס בינה מלאכותית לקבלת פרשנות והדרכה מותאמות אישית על-פי יומן החלומות שלכם.</p>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <div class="feat-body">
+          <h3>התראות חכמות</h3>
+          <p>תזכורות יומיות לתיעוד חלומות ולתרגול חלימה צלולה — כדי שלא תפספסו אף חלום.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══ -->
+<section class="section schools-bg" id="how">
+  <div class="section-inner">
+    <div class="how-grid">
+      <div>
+        <div class="section-header">
+          <span class="eyebrow">תהליך</span>
+          <h2 class="section-title">מהתעוררות<br/>לתובנה — בארבעה צעדים</h2>
+          <p class="section-sub">פשוט, מהיר, ואוטומטי לחלוטין.</p>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h3>מקליט את החלום</h3>
+              <p>לחץ על כפתור ההקלטה מיד עם ההתעוררות וספר את החלום בקול.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h3>AI ממלל בדיוק גבוה</h3>
+              <p>Whisper ממיר את ההקלטה לטקסט עברי מדויק תוך שניות.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h3>ניתוח ותמונה אוטומטיים</h3>
+              <p>GPT-4 מנתח את החלום ו-DALL-E 3 יוצר תמונה — הכל אוטומטי.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <h3>גלה את הדפוסים שלך</h3>
+              <p>יומן החלומות חושף נושאים חוזרים ותובנות על עצמך לאורך זמן.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="how-visual">
+        <div class="how-card active">
+          <div class="how-card-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+          </div>
+          <div class="how-card-text">
+            <strong>הקלטה קולית</strong>
+            "הייתי רוכב על סוס על שפת הים..."
+          </div>
+        </div>
+        <div class="how-card">
+          <div class="how-card-icon">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="how-card-text">
+            <strong>תמלול</strong>
+            ✓ הטקסט מוכן תוך 3 שניות
+          </div>
+        </div>
+        <div class="how-card">
+          <div class="how-card-icon">
+            <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <div class="how-card-text">
+            <strong>ניתוח לפי יונג</strong>
+            "הסוס מייצג חופש ושליטה..."
+          </div>
+        </div>
+        <div class="how-card">
+          <div class="how-card-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          </div>
+          <div class="how-card-text">
+            <strong>תמונה נוצרה</strong>
+            רוכב על סוס חום על רקע שקיעה
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SCHOOLS ══ -->
+<section class="section" id="schools">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="eyebrow">אסכולות פרשנות</span>
+      <h2 class="section-title">פירוש חלומות לפי<br/>הגישה שמדברת אליכם</h2>
+      <p class="section-sub">לומי משלבת פסיכולוגיה מודרנית, מקורות יהודיים עתיקים ועוד — כדי שתקבלו את הפרשנות שמתחברת אליכם.</p>
+    </div>
+    <div class="schools-grid">
+      <div class="school-card">
+        <div class="school-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <div class="school-body"><h4>קבלה וזוהר</h4><p>פרשנות רוחנית על-פי ספר הזוהר ומקורות יהודיים עתיקים</p></div>
+      </div>
+      <div class="school-card">
+        <div class="school-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+        <div class="school-body"><h4>חז"ל</h4><p>פירוש חלומות על-פי המסורת התלמודית והרבנית</p></div>
+      </div>
+      <div class="school-card">
+        <div class="school-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg></div>
+        <div class="school-body"><h4>פרויד</h4><p>רצונות לא-מודעים, סמלים ואסוציאציות חופשיות</p></div>
+      </div>
+      <div class="school-card">
+        <div class="school-icon"><svg viewBox="0 0 24 24"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div class="school-body"><h4>פסיכולוגיה מודרנית</h4><p>עיבוד רגשי, זיכרון ודפוסי חשיבה בשינה</p></div>
+      </div>
+      <div class="school-card">
+        <div class="school-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+        <div class="school-body"><h4>אסטרולוגיה</h4><p>ניתוח חלום לפי תוכן ומזל אישי</p></div>
+      </div>
+      <div class="school-card">
+        <div class="school-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div class="school-body"><h4>תרבויות עתיקות</h4><p>פרשנות חלומות ממצרים, יוון ומסופוטמיה העתיקה</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIALS ══ -->
+<section class="section screenshots-bg" id="testimonials">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="eyebrow">ביקורות</span>
+      <h2 class="section-title">מה אומרים המשתמשים?</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="stars">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <p class="testi-text">״הפרשנות לפי קבלה וזוהר שינתה לי את הדרך שבה אני מסתכל על החלומות שלי. לא ציפיתי שאפליקציה תוכל לתת הסבר כזה עמוק ומדויק.״</p>
+        <div class="testi-author">
+          <div class="avatar"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg></div>
+          <div class="author-info"><strong>נועה כ.</strong><span>תל אביב</span></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <p class="testi-text">״הצ'אט עם מומחה החלומות ב-AI זה גמר אותי. שאלתי על חלום שחוזר אצלי שלוש פעמים — קיבלתי פרשנות מותאמת אישית שגרמה לי לבכות.״</p>
+        <div class="testi-author">
+          <div class="avatar"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg></div>
+          <div class="author-info"><strong>אורי ל.</strong><span>ירושלים</span></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <p class="testi-text">״השתמשתי בלומי שבוע בלבד ואני כבר מבינה דפוסים שחוזרים בחלומות שלי. התמונות שנוצרות הן יצירות אמנות. אפליקציה שלא ידעתי שחיכיתי לה.״</p>
+        <div class="testi-author">
+          <div class="avatar"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg></div>
+          <div class="author-info"><strong>מיכל ר.</strong><span>חיפה</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA ══ -->
+<section class="cta-section" id="cta">
+  <div class="cta-box">
+    <div class="cta-text">
+      <span class="eyebrow">7 ימים ניסיון חינם</span>
+      <h2>גלו את המשמעות<br/>הנסתרת של חלומותיכם</h2>
+      <p>הורידו את לומי עכשיו. 7 ימי ניסיון חינם — לאחר מכן מנוי חודשי במחיר נגיש הכולל גישה מלאה לכל אסכולות הפרשנות.</p>
+    </div>
+    <div class="cta-actions">
+      <a href="#" class="store-btn">
+        <div class="store-btn-icon">
+          <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        </div>
+        <div class="store-btn-info">
+          <small>הורד מ-</small>
+          <strong>App Store</strong>
+        </div>
+      </a>
+      <a href="#" class="store-btn">
+        <div class="store-btn-icon">
+          <svg viewBox="0 0 24 24"><path d="M3.18 23.76c.3.17.65.19.98.08L14.93 12 3.18.16c-.33-.11-.68-.09-.98.08C1.86.63 1.5 1.22 1.5 1.88v20.24c0 .66.36 1.25.68.64zM16.54 10.39l-2.6-2.6L5.7.55l11.18 6.45 2.33 1.35-2.67 2.04zM5.7 23.45l8.24-7.24 2.6-2.6 2.67 2.04-2.33 1.35L5.7 23.45zM20.34 10.97l-1.63-.94-2.17 1.97 2.17 1.97 1.63-.94c.78-.45.78-1.61 0-2.06z"/></svg>
+        </div>
+        <div class="store-btn-info">
+          <small>הורד מ-</small>
+          <strong>Google Play</strong>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-inner">
+    <a href="#" class="footer-logo">
+      <img src="images/icon.jpg" alt="Lumi" />
+      Lumi
+    </a>
+    <p>© 2025 לומי — תיעוד ופירוש חלומות. כל הזכויות שמורות.</p>
+    <ul class="footer-links">
+      <li><a href="#">פרטיות</a></li>
+      <li><a href="#">תנאי שימוש</a></li>
+      <li><a href="#">צור קשר</a></li>
+    </ul>
+  </div>
+</footer>
+
+<!-- ══ LIGHTBOX ══ -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="" />
+</div>
+
+<script>
+  function openLightbox(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__mcp-registry__search_mcp_registry",
+      "Bash(gh auth status)",
+      "Bash(git config --global user.name)",
+      "Bash(git config --global user.email)",
+      "Bash(ssh -T git@github.com)",
+      "Bash(unzip -o lucid-dream-api-main.zip -d lucid-dream-api-main)",
+      "mcp__Claude_Preview__preview_start",
+      "WebFetch(domain:www.pophy.co.il)",
+      "WebFetch(domain:drive.google.com)",
+      "Bash(gh --version)",
+      "Bash(git --version)",
+      "Bash(brew --version)",
+      "Bash(ssh-keyscan github.com)",
+      "Bash(~/.ssh/known_hosts)",
+      "Bash(git init)",
+      "Bash(git add index.html images/ .claude/ CLAUDE.md .gitignore)"
+    ]
+  }
+}
