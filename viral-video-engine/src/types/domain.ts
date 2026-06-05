@@ -13,7 +13,7 @@ export const BrandSchema = z.object({
 export type Brand = z.infer<typeof BrandSchema>;
 
 export const ArticleSchema = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().uuid(),
   brandId: z.string(),
   wpPostId: z.number().int(),
   url: z.string().url(),

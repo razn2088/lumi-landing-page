@@ -18,11 +18,41 @@ describe("domain schemas", () => {
   it("rejects an article missing a content hash", () => {
     expect(() =>
       ArticleSchema.parse({
+        id: "11111111-1111-1111-1111-111111111111",
         brandId: "topdealsus",
         wpPostId: 1,
         url: "https://topdealsus.com/x",
         title: "x",
         publishedAt: "2026-06-01T00:00:00.000Z",
+      }),
+    ).toThrow();
+  });
+
+  it("applies article defaults", () => {
+    const a = ArticleSchema.parse({
+      id: "11111111-1111-1111-1111-111111111111",
+      brandId: "topdealsus",
+      wpPostId: 1,
+      url: "https://topdealsus.com/x",
+      title: "x",
+      contentHash: "h1",
+      publishedAt: "2026-06-01T00:00:00.000Z",
+    });
+    expect(a.excerpt).toBe("");
+    expect(a.content).toBe("");
+    expect(a.imageUrls).toEqual([]);
+    expect(a.featuredImageUrl).toBeNull();
+  });
+
+  it("rejects a brand with an invalid siteUrl", () => {
+    expect(() =>
+      BrandSchema.parse({
+        id: "x",
+        name: "X",
+        siteUrl: "not-a-url",
+        wpApiBase: "https://x.com/wp-json/wp/v2",
+        niche: "n",
+        tone: "t",
       }),
     ).toThrow();
   });
