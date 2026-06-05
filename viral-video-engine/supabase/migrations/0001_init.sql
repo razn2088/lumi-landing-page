@@ -52,6 +52,7 @@ create index if not exists jobs_claim_idx on jobs (status, type, run_after);
 create or replace function claim_job(p_types text[], p_worker text)
 returns setof jobs
 language plpgsql
+set search_path = public
 as $$
 declare
   v_id uuid;
