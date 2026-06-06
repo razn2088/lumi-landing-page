@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Article, Brand, Job, JobType, GeneratedContent, Post } from "../types/domain.js";
+import type { Article, Brand, Job, JobType, GeneratedContent, Post, PostAssets } from "../types/domain.js";
 import type { ArticlesRepo, BrandsRepo, JobsRepo, NewJob, PostsRepo } from "./repositories.js";
 import { decideFailState } from "../queue/logic.js";
 
@@ -127,6 +127,7 @@ function rowToPost(r: Record<string, any>): Post {
     id: r.id, articleId: r.article_id, brandId: r.brand_id, script: r.script,
     caption: r.caption, hashtags: r.hashtags ?? [], status: r.status,
     createdAt: new Date(r.created_at).toISOString(),
+    assets: r.voiceover_url ? { voiceoverUrl: r.voiceover_url, voiceoverDurationMs: r.voiceover_duration_ms, clipUrls: r.clip_urls ?? [] } : undefined,
   };
 }
 
@@ -148,5 +149,19 @@ export class SupabasePostsRepo implements PostsRepo {
     const { data, error } = await this.sb.from("posts").select("*").eq("article_id", articleId).maybeSingle();
     if (error) throw error;
     return data ? rowToPost(data) : null;
+  }
+  async getById(postId: string): Promise<Post | null> {
+    const { data, error } = await this.sb.from("posts").select("*").eq("id", postId).maybeSingle();
+    if (error) throw error;
+    return data ? rowToPost(data) : null;
+  }
+  async saveAssets(postId: string, assets: PostAssets): Promise<void> {
+    const { error } = await this.sb.from("posts").update({
+      voiceover_url: assets.voiceoverUrl,
+      voiceover_duration_ms: assets.voiceoverDurationMs,
+      clip_urls: assets.clipUrls,
+      updated_at: new Date().toISOString(),
+    }).eq("id", postId);
+    if (error) throw error;
   }
 }

@@ -82,6 +82,7 @@ export const PostSchema = z.object({
   script: ScriptSchema,
   caption: z.string(),
   hashtags: z.array(z.string()).default([]),
+  assets: PostAssetsSchema.optional(),
   status: z.string().default("pending_review"),
   createdAt: z.string(),
 });

@@ -1,4 +1,4 @@
-import type { Article, Brand, Job, JobType, GeneratedContent, Post } from "../types/domain.js";
+import type { Article, Brand, Job, JobType, GeneratedContent, Post, PostAssets } from "../types/domain.js";
 
 export interface BrandsRepo {
   getById(id: string): Promise<Brand | null>;
@@ -32,4 +32,6 @@ export interface JobsRepo {
 export interface PostsRepo {
   upsertForArticle(articleId: string, brandId: string, content: GeneratedContent): Promise<Post>;
   getByArticleId(articleId: string): Promise<Post | null>;
+  getById(postId: string): Promise<Post | null>;
+  saveAssets(postId: string, assets: PostAssets): Promise<void>;
 }
