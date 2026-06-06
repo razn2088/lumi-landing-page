@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { generateForArticle } from "../../src/pipeline/generate.js";
-import { MemoryBrandsRepo, MemoryArticlesRepo, MemoryPostsRepo } from "../../src/db/memoryRepos.js";
+import { MemoryBrandsRepo, MemoryArticlesRepo, MemoryPostsRepo, MemoryJobsRepo } from "../../src/db/memoryRepos.js";
 import { ProviderRegistry } from "../../src/providers/registry.js";
 import { ProviderRouter } from "../../src/providers/router.js";
 import { FakeLLMProvider } from "../../src/providers/llm/fake.js";
@@ -22,10 +22,11 @@ function deps(llmText: string) {
   const brands = new MemoryBrandsRepo([brand]);
   const articles = new MemoryArticlesRepo();
   const posts = new MemoryPostsRepo();
+  const jobs = new MemoryJobsRepo();
   const reg = new ProviderRegistry();
   reg.register("llm", "fake", new FakeLLMProvider(llmText, "fake"));
   const router = new ProviderRouter(reg);
-  return { brands, articles, posts, router, llmChain: ["fake"] };
+  return { brands, articles, posts, jobs, router, llmChain: ["fake"] };
 }
 
 describe("generateForArticle", () => {

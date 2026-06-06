@@ -1,4 +1,4 @@
-import type { ArticlesRepo, BrandsRepo, PostsRepo } from "../db/repositories.js";
+import type { ArticlesRepo, BrandsRepo, JobsRepo, PostsRepo } from "../db/repositories.js";
 import type { ProviderRouter } from "../providers/router.js";
 import type { LLMProvider, LLMResult } from "../providers/types.js";
 import type { Post } from "../types/domain.js";
@@ -9,6 +9,7 @@ export interface GenerateDeps {
   brands: BrandsRepo;
   articles: ArticlesRepo;
   posts: PostsRepo;
+  jobs: JobsRepo;
   router: ProviderRouter;
   llmChain: string[];
 }
@@ -26,5 +27,7 @@ export async function generateForArticle(articleId: string, deps: GenerateDeps):
   );
 
   const content = parseGeneratedContent(result.text);
-  return deps.posts.upsertForArticle(article.id, brand.id, content);
+  const post = await deps.posts.upsertForArticle(article.id, brand.id, content);
+  await deps.jobs.enqueue({ type: "assets", idempotencyKey: `assets:${post.id}`, payload: { postId: post.id, brandId: brand.id } });
+  return post;
 }

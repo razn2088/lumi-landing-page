@@ -35,7 +35,7 @@ describe("drain", () => {
       await jobs.enqueue({ type: "generate", idempotencyKey: `generate:${art.id}`, payload: { articleId: art.id, brandId: "topdealsus" } });
     }
 
-    const handlers = buildHandlers({ brands, articles, posts, router, llmChain: ["fake"] });
+    const handlers = buildHandlers({ brands, articles, posts, jobs, router, llmChain: ["fake"] });
 
     const processed = await drain({ jobs, workerId: "w1", handlers });
     expect(processed).toBe(3);

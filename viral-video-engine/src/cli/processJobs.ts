@@ -22,7 +22,7 @@ async function main() {
   reg.register("llm", "claude", createAnthropicProvider(cfg.ANTHROPIC_API_KEY, cfg.ANTHROPIC_MODEL));
   const router = new ProviderRouter(reg);
 
-  const handlers = buildHandlers({ brands, articles, posts, router, llmChain: ["claude"] });
+  const handlers = buildHandlers({ brands, articles, posts, jobs, router, llmChain: ["claude"] });
   console.log("Draining generate jobs ...");
   const processed = await drain({ jobs, workerId: cfg.WORKER_ID, handlers });
   console.log(`Processed ${processed} job(s).`);
