@@ -87,4 +87,17 @@ describe("buildAssetsForPost", () => {
       storage: d.storage, router: d.router, ttsChain: ["fake"], stockChain: ["fake"],
     })).rejects.toThrow(/post not found/i);
   });
+
+  it("stores wordTimings and a segments timeline aligned to the script", async () => {
+    const d = await setup();
+    const assets = await buildAssetsForPost(d.post.id, {
+      brands: d.brands, articles: d.articles, posts: d.posts, jobs: d.jobs,
+      storage: d.storage, router: d.router, ttsChain: ["fake"], stockChain: ["fake"],
+    });
+    expect(assets.wordTimings.length).toBeGreaterThan(0);
+    expect(assets.segments[0]!.role).toBe("hook");
+    expect(assets.segments[assets.segments.length - 1]!.role).toBe("cta");
+    expect(assets.segments.some((s) => s.role === "beat")).toBe(true);
+    expect(assets.segments[assets.segments.length - 1]!.clipUrl).toBeNull();
+  });
 });

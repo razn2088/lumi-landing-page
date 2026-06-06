@@ -3,6 +3,8 @@ import type { ProviderRouter } from "../providers/router.js";
 import type { StockProvider, TTSProvider, TTSResult } from "../providers/types.js";
 import type { StorageClient } from "../storage/types.js";
 import type { PostAssets } from "../types/domain.js";
+import { buildNarration } from "../text/narration.js";
+import { buildSegments } from "./segments.js";
 
 export interface AssetsDeps {
   brands: BrandsRepo;
@@ -24,7 +26,7 @@ export async function buildAssetsForPost(postId: string, deps: AssetsDeps): Prom
   const brand = await deps.brands.getById(post.brandId);
   if (!brand) throw new Error(`Brand not found: ${post.brandId}`);
 
-  const narration = [post.script.hook, ...post.script.beats.map((b) => b.voiceover), post.script.cta].join(" ");
+  const narration = buildNarration(post.script);
   const tts = await deps.router.call<TTSProvider, TTSResult>(
     { capability: "tts", chain: deps.ttsChain },
     (p) => p.synthesize({ text: narration, voiceId: deps.voiceId ?? "en-US-Neural2-D" }),
@@ -34,21 +36,28 @@ export async function buildAssetsForPost(postId: string, deps: AssetsDeps): Prom
   );
 
   const fallback = article.featuredImageUrl;
-  const clipUrls: string[] = [];
+  const beatClips: (string | null)[] = [];
   for (const beat of post.script.beats) {
     if (beat.kind === "product_image") {
-      if (fallback) clipUrls.push(fallback);
+      beatClips.push(fallback ?? null);
       continue;
     }
     const clip = await deps.router.call<StockProvider, string | null>(
       { capability: "stock", chain: deps.stockChain },
       (p) => p.searchClip(beat.brollKeywords),
     );
-    if (clip) clipUrls.push(clip);
-    else if (fallback) clipUrls.push(fallback);
+    beatClips.push(clip ?? fallback ?? null);
   }
+  const clipUrls = beatClips.filter((c): c is string => c !== null);
+  const segments = buildSegments(post.script, beatClips, tts.wordTimings, tts.durationMs);
 
-  const assets: PostAssets = { voiceoverUrl, voiceoverDurationMs: tts.durationMs, clipUrls, wordTimings: [], segments: [] };
+  const assets: PostAssets = {
+    voiceoverUrl,
+    voiceoverDurationMs: tts.durationMs,
+    clipUrls,
+    wordTimings: tts.wordTimings,
+    segments,
+  };
   await deps.posts.saveAssets(post.id, assets);
   await deps.jobs.enqueue({ type: "render", idempotencyKey: `render:${post.id}`, payload: { postId: post.id, brandId: post.brandId } });
   return assets;
