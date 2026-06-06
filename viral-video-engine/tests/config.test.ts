@@ -23,4 +23,13 @@ describe("loadConfig", () => {
   it("throws when SUPABASE_URL is missing", () => {
     expect(() => loadConfig({ SUPABASE_SERVICE_ROLE_KEY: "key" })).toThrow();
   });
+
+  it("defaults ANTHROPIC_MODEL and leaves ANTHROPIC_API_KEY optional", () => {
+    const cfg = loadConfig({
+      SUPABASE_URL: "http://127.0.0.1:54321",
+      SUPABASE_SERVICE_ROLE_KEY: "key",
+    });
+    expect(cfg.ANTHROPIC_MODEL).toContain("claude");
+    expect(cfg.ANTHROPIC_API_KEY).toBeUndefined();
+  });
 });
