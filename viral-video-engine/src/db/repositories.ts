@@ -34,4 +34,5 @@ export interface PostsRepo {
   getByArticleId(articleId: string): Promise<Post | null>;
   getById(postId: string): Promise<Post | null>;
   saveAssets(postId: string, assets: PostAssets): Promise<void>;
+  saveRender(postId: string, videoUrl: string): Promise<void>;
 }

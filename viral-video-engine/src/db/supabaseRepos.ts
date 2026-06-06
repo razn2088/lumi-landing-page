@@ -177,4 +177,12 @@ export class SupabasePostsRepo implements PostsRepo {
     }).eq("id", postId);
     if (error) throw error;
   }
+  async saveRender(postId: string, videoUrl: string): Promise<void> {
+    const { error } = await this.sb.from("posts").update({
+      video_url: videoUrl,
+      status: "rendered",
+      updated_at: new Date().toISOString(),
+    }).eq("id", postId);
+    if (error) throw error;
+  }
 }

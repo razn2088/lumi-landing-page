@@ -125,4 +125,10 @@ export class MemoryPostsRepo implements PostsRepo {
     }
     throw new Error(`Post not found: ${postId}`);
   }
+  async saveRender(postId: string, videoUrl: string): Promise<void> {
+    for (const p of this.byArticle.values()) {
+      if (p.id === postId) { p.videoUrl = videoUrl; p.status = "rendered"; return; }
+    }
+    throw new Error(`Post not found: ${postId}`);
+  }
 }
