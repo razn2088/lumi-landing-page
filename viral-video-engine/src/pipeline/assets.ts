@@ -48,7 +48,7 @@ export async function buildAssetsForPost(postId: string, deps: AssetsDeps): Prom
     else if (fallback) clipUrls.push(fallback);
   }
 
-  const assets: PostAssets = { voiceoverUrl, voiceoverDurationMs: tts.durationMs, clipUrls };
+  const assets: PostAssets = { voiceoverUrl, voiceoverDurationMs: tts.durationMs, clipUrls, wordTimings: [], segments: [] };
   await deps.posts.saveAssets(post.id, assets);
   await deps.jobs.enqueue({ type: "render", idempotencyKey: `render:${post.id}`, payload: { postId: post.id, brandId: post.brandId } });
   return assets;

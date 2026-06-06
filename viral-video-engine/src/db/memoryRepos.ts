@@ -105,6 +105,7 @@ export class MemoryPostsRepo implements PostsRepo {
       script: content.script,
       caption: content.caption,
       hashtags: content.hashtags,
+      videoUrl: existing?.videoUrl ?? null,
       status: existing?.status ?? "pending_review",
       createdAt: existing?.createdAt ?? new Date().toISOString(),
     };

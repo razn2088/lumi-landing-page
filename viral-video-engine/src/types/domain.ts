@@ -9,6 +9,10 @@ export const BrandSchema = z.object({
   tone: z.string().default(""),
   useFeaturedImageBeat: z.boolean().default(false),
   active: z.boolean().default(true),
+  handle: z.string().default(""),
+  logoUrl: z.string().url().nullable().default(null),
+  brandColor: z.string().default("#ffd60a"),
+  musicDriveFolderId: z.string().nullable().default(null),
 });
 export type Brand = z.infer<typeof BrandSchema>;
 
@@ -68,10 +72,28 @@ export const GeneratedContentSchema = z.object({
 });
 export type GeneratedContent = z.infer<typeof GeneratedContentSchema>;
 
+export const WordTimingSchema = z.object({
+  word: z.string(),
+  startMs: z.number().int().nonnegative(),
+});
+export type WordTiming = z.infer<typeof WordTimingSchema>;
+
+export const SegmentSchema = z.object({
+  role: z.enum(["hook", "beat", "cta"]),
+  beatIndex: z.number().int().nonnegative().optional(),
+  text: z.string(),
+  startMs: z.number().int().nonnegative(),
+  endMs: z.number().int().nonnegative(),
+  clipUrl: z.string().url().nullable().default(null),
+});
+export type Segment = z.infer<typeof SegmentSchema>;
+
 export const PostAssetsSchema = z.object({
   voiceoverUrl: z.string().url(),
   voiceoverDurationMs: z.number().int().positive(),
   clipUrls: z.array(z.string().url()).default([]),
+  wordTimings: z.array(WordTimingSchema).default([]),
+  segments: z.array(SegmentSchema).default([]),
 });
 export type PostAssets = z.infer<typeof PostAssetsSchema>;
 
@@ -83,6 +105,7 @@ export const PostSchema = z.object({
   caption: z.string(),
   hashtags: z.array(z.string()).default([]),
   assets: PostAssetsSchema.optional(),
+  videoUrl: z.string().url().nullable().default(null),
   status: z.string().default("pending_review"),
   createdAt: z.string(),
 });

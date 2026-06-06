@@ -6,7 +6,7 @@ const content: GeneratedContent = {
   script: { hook: "h", beats: [{ kind: "broll", voiceover: "v", brollKeywords: ["k"] }], cta: "c" },
   caption: "cap", hashtags: [],
 };
-const assets: PostAssets = { voiceoverUrl: "https://x/a.wav", voiceoverDurationMs: 5000, clipUrls: ["https://x/1.mp4"] };
+const assets: PostAssets = { voiceoverUrl: "https://x/a.wav", voiceoverDurationMs: 5000, clipUrls: ["https://x/1.mp4"], wordTimings: [], segments: [] };
 
 describe("MemoryPostsRepo getById + saveAssets", () => {
   it("gets a post by id and saves assets onto it", async () => {

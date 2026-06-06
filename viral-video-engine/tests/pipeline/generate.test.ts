@@ -10,6 +10,7 @@ const brand: Brand = {
   id: "topdealsus", name: "Top Deals US", siteUrl: "https://topdealsus.com",
   wpApiBase: "https://topdealsus.com/wp-json/wp/v2", niche: "Amazon deals",
   tone: "punchy", useFeaturedImageBeat: true, active: true,
+  handle: "", logoUrl: null, brandColor: "#ffd60a", musicDriveFolderId: null,
 };
 
 const llmJson = JSON.stringify({

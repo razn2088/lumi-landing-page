@@ -6,6 +6,7 @@ const brand: Brand = {
   id: "topdealsus", name: "Top Deals US", siteUrl: "https://topdealsus.com",
   wpApiBase: "https://topdealsus.com/wp-json/wp/v2", niche: "Amazon deals",
   tone: "punchy deal-hunter", useFeaturedImageBeat: true, active: true,
+  handle: "", logoUrl: null, brandColor: "#ffd60a", musicDriveFolderId: null,
 };
 const article: Article = {
   id: "11111111-1111-1111-1111-111111111111", brandId: "topdealsus", wpPostId: 1,

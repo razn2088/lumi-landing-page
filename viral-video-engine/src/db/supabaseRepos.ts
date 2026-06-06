@@ -7,6 +7,8 @@ function rowToBrand(r: Record<string, any>): Brand {
   return {
     id: r.id, name: r.name, siteUrl: r.site_url, wpApiBase: r.wp_api_base,
     niche: r.niche, tone: r.tone, useFeaturedImageBeat: r.use_featured_image_beat, active: r.active,
+    handle: r.handle ?? "", logoUrl: r.logo_url ?? null,
+    brandColor: r.brand_color ?? "#ffd60a", musicDriveFolderId: r.music_drive_folder_id ?? null,
   };
 }
 
@@ -127,7 +129,16 @@ function rowToPost(r: Record<string, any>): Post {
     id: r.id, articleId: r.article_id, brandId: r.brand_id, script: r.script,
     caption: r.caption, hashtags: r.hashtags ?? [], status: r.status,
     createdAt: new Date(r.created_at).toISOString(),
-    assets: r.voiceover_url ? { voiceoverUrl: r.voiceover_url, voiceoverDurationMs: r.voiceover_duration_ms, clipUrls: r.clip_urls ?? [] } : undefined,
+    videoUrl: r.video_url ?? null,
+    assets: r.voiceover_url
+      ? {
+          voiceoverUrl: r.voiceover_url,
+          voiceoverDurationMs: r.voiceover_duration_ms,
+          clipUrls: r.clip_urls ?? [],
+          wordTimings: r.word_timings ?? [],
+          segments: r.segments ?? [],
+        }
+      : undefined,
   };
 }
 
