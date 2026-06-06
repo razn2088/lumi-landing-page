@@ -10,6 +10,7 @@ const EnvSchema = z.object({
   PEXELS_API_KEY: z.string().optional(),
   STORAGE_BUCKET: z.string().default("viral-video-assets"),
   WORKER_ID: z.string().default("worker-local"),
+  GOOGLE_SERVICE_ACCOUNT_JSON: z.string().optional(),
 });
 
 export type Config = z.infer<typeof EnvSchema>;

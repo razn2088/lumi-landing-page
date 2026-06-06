@@ -39,4 +39,10 @@ describe("loadConfig", () => {
     expect(cfg.GOOGLE_TTS_API_KEY).toBeUndefined();
     expect(cfg.PEXELS_API_KEY).toBeUndefined();
   });
+
+  it("accepts GOOGLE_SERVICE_ACCOUNT_JSON and defaults it to undefined", () => {
+    const base = { SUPABASE_URL: "https://x.supabase.co", SUPABASE_SERVICE_ROLE_KEY: "k" };
+    expect(loadConfig({ ...base }).GOOGLE_SERVICE_ACCOUNT_JSON).toBeUndefined();
+    expect(loadConfig({ ...base, GOOGLE_SERVICE_ACCOUNT_JSON: "/path/sa.json" }).GOOGLE_SERVICE_ACCOUNT_JSON).toBe("/path/sa.json");
+  });
 });
