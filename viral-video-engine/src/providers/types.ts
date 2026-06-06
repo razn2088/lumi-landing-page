@@ -38,3 +38,22 @@ export interface StockProvider {
   /** Returns a portrait video clip URL for the given keywords, or null if none found. */
   searchClip(keywords: string[]): Promise<string | null>;
 }
+
+export interface MusicFileMeta {
+  id: string;
+  name: string;
+}
+
+/** Minimal structural subset of the googleapis drive_v3 client we use (keeps tests free of googleapis). */
+export interface DriveLike {
+  files: {
+    list(params: unknown): Promise<{ data: { files?: Array<{ id?: string | null; name?: string | null }> } }>;
+    get(params: unknown, opts: unknown): Promise<{ data: unknown }>;
+  };
+}
+
+export interface MusicSource {
+  readonly key: string;
+  listFiles(folderId: string): Promise<MusicFileMeta[]>;
+  download(fileId: string): Promise<Uint8Array>;
+}
