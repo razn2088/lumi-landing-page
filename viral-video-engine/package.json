@@ -10,7 +10,8 @@
     "test:watch": "vitest",
     "test:int": "vitest run --config vitest.int.config.ts",
     "typecheck": "tsc --noEmit",
-    "scan": "tsx src/cli/runOnce.ts"
+    "scan": "tsx src/cli/runOnce.ts",
+    "process": "tsx src/cli/processJobs.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.101.0",
