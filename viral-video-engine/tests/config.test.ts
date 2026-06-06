@@ -32,4 +32,11 @@ describe("loadConfig", () => {
     expect(cfg.ANTHROPIC_MODEL).toContain("claude");
     expect(cfg.ANTHROPIC_API_KEY).toBeUndefined();
   });
+
+  it("defaults STORAGE_BUCKET and leaves TTS/Pexels keys optional", () => {
+    const cfg = loadConfig({ SUPABASE_URL: "http://127.0.0.1:54321", SUPABASE_SERVICE_ROLE_KEY: "key" });
+    expect(cfg.STORAGE_BUCKET).toBe("viral-video-assets");
+    expect(cfg.GOOGLE_TTS_API_KEY).toBeUndefined();
+    expect(cfg.PEXELS_API_KEY).toBeUndefined();
+  });
 });

@@ -6,6 +6,9 @@ const EnvSchema = z.object({
   SUPABASE_SCHEMA: z.string().default("public"),
   ANTHROPIC_API_KEY: z.string().optional(),
   ANTHROPIC_MODEL: z.string().default("claude-opus-4-8"),
+  GOOGLE_TTS_API_KEY: z.string().optional(),
+  PEXELS_API_KEY: z.string().optional(),
+  STORAGE_BUCKET: z.string().default("viral-video-assets"),
   WORKER_ID: z.string().default("worker-local"),
 });
 
