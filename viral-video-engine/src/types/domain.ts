@@ -68,6 +68,13 @@ export const GeneratedContentSchema = z.object({
 });
 export type GeneratedContent = z.infer<typeof GeneratedContentSchema>;
 
+export const PostAssetsSchema = z.object({
+  voiceoverUrl: z.string().url(),
+  voiceoverDurationMs: z.number().int().positive(),
+  clipUrls: z.array(z.string().url()).default([]),
+});
+export type PostAssets = z.infer<typeof PostAssetsSchema>;
+
 export const PostSchema = z.object({
   id: z.string().uuid(),
   articleId: z.string().uuid(),
