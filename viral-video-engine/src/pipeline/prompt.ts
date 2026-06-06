@@ -1,0 +1,38 @@
+import type { Article, Brand } from "../types/domain.js";
+
+export interface LLMPrompt {
+  system: string;
+  user: string;
+}
+
+const SHAPE =
+  '{"script":{"hook":"...","beats":[{"kind":"broll","voiceover":"...","brollKeywords":["...","..."]}],"cta":"..."},"caption":"...","hashtags":["...","..."]}';
+
+export function buildGeneratePrompt(brand: Brand, article: Article): LLMPrompt {
+  const beatRule = brand.useFeaturedImageBeat
+    ? 'Make exactly one beat the product reveal with "kind":"product_image"; all other beats use "kind":"broll".'
+    : 'Every beat uses "kind":"broll".';
+
+  const system = [
+    `You are a short-form vertical video scriptwriter for "${brand.name}", a ${brand.niche} brand.`,
+    `Brand voice: ${brand.tone}`,
+    `Write a fast, scroll-stopping TikTok/Reels script of about 25-40 seconds.`,
+    `Structure: a punchy 2-second HOOK, then 3 to 5 BEATS, then a CTA pointing viewers to the link in bio.`,
+    `Rewrite the source title into a fresh hook; do NOT reuse the verbose original title.`,
+    beatRule,
+    `For each beat give one spoken "voiceover" line and 2-4 short "brollKeywords" for stock/AI footage search.`,
+    `The "caption" is one engaging line plus a link-in-bio nudge.`,
+    `Give 3-6 "hashtags" as lowercase words with no spaces and no leading '#'.`,
+    `Output ONLY valid minified JSON, no markdown fences, matching exactly this shape:`,
+    SHAPE,
+  ].join("\n");
+
+  const user = [
+    `SOURCE TITLE: ${article.title}`,
+    `SOURCE URL: ${article.url}`,
+    `SOURCE CONTENT:`,
+    article.content.slice(0, 6000),
+  ].join("\n");
+
+  return { system, user };
+}
