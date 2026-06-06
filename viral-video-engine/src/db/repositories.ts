@@ -1,4 +1,4 @@
-import type { Article, Brand, Job, JobType } from "../types/domain.js";
+import type { Article, Brand, Job, JobType, GeneratedContent, Post } from "../types/domain.js";
 
 export interface BrandsRepo {
   getById(id: string): Promise<Brand | null>;
@@ -9,6 +9,7 @@ export interface ArticlesRepo {
   existsByHash(brandId: string, contentHash: string): Promise<boolean>;
   insert(article: Omit<Article, "id">): Promise<Article>;
   latestPublishedAt(brandId: string): Promise<string | null>;
+  getById(id: string): Promise<Article | null>;
 }
 
 export interface NewJob {
@@ -26,4 +27,9 @@ export interface JobsRepo {
   claim(types: JobType[], worker: string): Promise<Job | null>;
   complete(id: string): Promise<void>;
   fail(id: string, error: string): Promise<void>;
+}
+
+export interface PostsRepo {
+  upsertForArticle(articleId: string, brandId: string, content: GeneratedContent): Promise<Post>;
+  getByArticleId(articleId: string): Promise<Post | null>;
 }

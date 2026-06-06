@@ -61,6 +61,17 @@ export class SupabaseArticlesRepo implements ArticlesRepo {
     if (error) throw error;
     return data?.published_at ? new Date(data.published_at).toISOString() : null;
   }
+  async getById(id: string): Promise<Article | null> {
+    const { data, error } = await this.sb.from("articles").select("*").eq("id", id).maybeSingle();
+    if (error) throw error;
+    if (!data) return null;
+    return {
+      id: data.id, brandId: data.brand_id, wpPostId: data.wp_post_id, url: data.url, title: data.title,
+      excerpt: data.excerpt, content: data.content, imageUrls: data.image_urls,
+      featuredImageUrl: data.featured_image_url, contentHash: data.content_hash,
+      publishedAt: new Date(data.published_at).toISOString(),
+    };
+  }
 }
 
 export class SupabaseJobsRepo implements JobsRepo {

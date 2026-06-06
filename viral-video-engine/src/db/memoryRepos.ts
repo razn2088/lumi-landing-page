@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
-import type { Article, Brand, Job, JobType } from "../types/domain.js";
-import type { ArticlesRepo, BrandsRepo, JobsRepo, NewJob } from "./repositories.js";
+import type { Article, Brand, Job, JobType, GeneratedContent, Post } from "../types/domain.js";
+import type { ArticlesRepo, BrandsRepo, JobsRepo, NewJob, PostsRepo } from "./repositories.js";
 import { decideFailState } from "../queue/logic.js";
 
 export class MemoryBrandsRepo implements BrandsRepo {
@@ -26,6 +26,9 @@ export class MemoryArticlesRepo implements ArticlesRepo {
   async latestPublishedAt(brandId: string) {
     const dates = this.items.filter((a) => a.brandId === brandId).map((a) => a.publishedAt).sort();
     return dates.length ? dates[dates.length - 1]! : null;
+  }
+  async getById(id: string) {
+    return this.items.find((a) => a.id === id) ?? null;
   }
 }
 
@@ -88,5 +91,27 @@ export class MemoryJobsRepo implements JobsRepo {
   forceReady(id: string) {
     const job = this.items.get(id);
     if (job) job.runAfter = new Date(0).toISOString();
+  }
+}
+
+export class MemoryPostsRepo implements PostsRepo {
+  private byArticle = new Map<string, Post>();
+  async upsertForArticle(articleId: string, brandId: string, content: GeneratedContent): Promise<Post> {
+    const existing = this.byArticle.get(articleId);
+    const post: Post = {
+      id: existing?.id ?? randomUUID(),
+      articleId,
+      brandId,
+      script: content.script,
+      caption: content.caption,
+      hashtags: content.hashtags,
+      status: existing?.status ?? "pending_review",
+      createdAt: existing?.createdAt ?? new Date().toISOString(),
+    };
+    this.byArticle.set(articleId, post);
+    return post;
+  }
+  async getByArticleId(articleId: string): Promise<Post | null> {
+    return this.byArticle.get(articleId) ?? null;
   }
 }
