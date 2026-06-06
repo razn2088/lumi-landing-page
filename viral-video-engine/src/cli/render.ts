@@ -36,6 +36,7 @@ async function main() {
     const job = await jobs.claim(["render"], cfg.WORKER_ID);
     if (!job) break;
     const postId = String(job.payload.postId ?? "");
+    const outPath = path.join(os.tmpdir(), `${postId}.mp4`);
     try {
       const post = await posts.getById(postId);
       if (!post) throw new Error(`Post not found: ${postId}`);
@@ -45,7 +46,6 @@ async function main() {
       const musicUrl = await pickBrandTrack(storage, brand.id, post.id);
       const inputProps = buildRenderProps(post, brand, musicUrl) as unknown as Record<string, unknown>;
       const composition = await selectComposition({ serveUrl, id: "video", inputProps });
-      const outPath = path.join(os.tmpdir(), `${postId}.mp4`);
       console.log(`Rendering ${postId} (${composition.durationInFrames} frames) ...`);
       await renderMedia({ composition, serveUrl, codec: "h264", outputLocation: outPath, inputProps });
 
@@ -53,13 +53,14 @@ async function main() {
       const videoUrl = await storage.upload(`video/${postId}.mp4`, bytes, "video/mp4");
       await posts.saveRender(postId, videoUrl);
       await jobs.complete(job.id);
-      await fs.unlink(outPath).catch(() => undefined);
       console.log(`Done ${postId} -> ${videoUrl}`);
       processed += 1;
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       console.error(`Render failed for ${postId}: ${msg}`);
       await jobs.fail(job.id, msg);
+    } finally {
+      await fs.unlink(outPath).catch(() => undefined);
     }
   }
   console.log(`Rendered ${processed} video(s).`);
