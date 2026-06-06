@@ -9,6 +9,7 @@ import { GoogleTTSProvider } from "../providers/tts/google.js";
 import { PexelsStockProvider } from "../providers/stock/pexels.js";
 import { SupabaseStorageClient } from "../storage/supabase.js";
 import { buildHandlers, buildAssetsHandlers } from "../worker/handlers.js";
+import type { HandlerMap } from "../worker/dispatcher.js";
 import { drain } from "../worker/runtime.js";
 
 async function main() {
@@ -28,12 +29,16 @@ async function main() {
   if (cfg.PEXELS_API_KEY) reg.register("stock", "pexels", new PexelsStockProvider(cfg.PEXELS_API_KEY));
   const router = new ProviderRouter(reg);
 
-  const handlers = {
-    ...buildHandlers({ brands, articles, posts, jobs, router, llmChain: ["claude"] }),
-    ...buildAssetsHandlers({ brands, articles, posts, jobs, storage, router, ttsChain: ["google"], stockChain: ["pexels"] }),
-  };
+  const handlers: HandlerMap = { ...buildHandlers({ brands, articles, posts, jobs, router, llmChain: ["claude"] }) };
 
-  console.log("Draining generate + assets jobs ...");
+  const assetsEnabled = Boolean(cfg.GOOGLE_TTS_API_KEY && cfg.PEXELS_API_KEY);
+  if (assetsEnabled) {
+    Object.assign(handlers, buildAssetsHandlers({ brands, articles, posts, jobs, storage, router, ttsChain: ["google"], stockChain: ["pexels"] }));
+  } else {
+    console.log("(assets handler disabled: set GOOGLE_TTS_API_KEY + PEXELS_API_KEY to enable; assets jobs stay queued)");
+  }
+
+  console.log(`Draining generate${assetsEnabled ? " + assets" : ""} jobs ...`);
   const processed = await drain({ jobs, workerId: cfg.WORKER_ID, handlers });
   console.log(`Processed ${processed} job(s).`);
 }
