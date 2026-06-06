@@ -1,7 +1,9 @@
 {
   "name": "viral-video-engine",
   "private": true,
-  "engines": { "node": ">=20.0.0" },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "type": "module",
   "scripts": {
     "test": "vitest run",
@@ -11,6 +13,7 @@
     "scan": "tsx src/cli/runOnce.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.101.0",
     "@supabase/supabase-js": "^2.45.0",
     "dotenv": "^16.4.5",
     "zod": "^3.23.8"

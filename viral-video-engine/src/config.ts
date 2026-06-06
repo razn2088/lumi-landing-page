@@ -5,7 +5,7 @@ const EnvSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
   SUPABASE_SCHEMA: z.string().default("public"),
   ANTHROPIC_API_KEY: z.string().optional(),
-  ANTHROPIC_MODEL: z.string().default("claude-sonnet-4-5"),
+  ANTHROPIC_MODEL: z.string().default("claude-opus-4-8"),
   WORKER_ID: z.string().default("worker-local"),
 });
 
