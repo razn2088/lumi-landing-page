@@ -45,3 +45,37 @@ export const JobSchema = z.object({
   runAfter: z.string(),
 });
 export type Job = z.infer<typeof JobSchema>;
+
+export const ScriptBeatSchema = z.object({
+  kind: z.enum(["broll", "product_image"]).default("broll"),
+  voiceover: z.string().min(1),
+  brollKeywords: z.array(z.string()).default([]),
+  onScreenText: z.string().optional(),
+});
+export type ScriptBeat = z.infer<typeof ScriptBeatSchema>;
+
+export const ScriptSchema = z.object({
+  hook: z.string().min(1),
+  beats: z.array(ScriptBeatSchema).min(1),
+  cta: z.string().min(1),
+});
+export type Script = z.infer<typeof ScriptSchema>;
+
+export const GeneratedContentSchema = z.object({
+  script: ScriptSchema,
+  caption: z.string().min(1),
+  hashtags: z.array(z.string()).default([]),
+});
+export type GeneratedContent = z.infer<typeof GeneratedContentSchema>;
+
+export const PostSchema = z.object({
+  id: z.string().uuid(),
+  articleId: z.string().uuid(),
+  brandId: z.string(),
+  script: ScriptSchema,
+  caption: z.string(),
+  hashtags: z.array(z.string()).default([]),
+  status: z.string().default("pending_review"),
+  createdAt: z.string(),
+});
+export type Post = z.infer<typeof PostSchema>;
