@@ -18,10 +18,15 @@ export interface TTSRequest {
   text: string;
   voiceId: string;
 }
+export interface WordTimingResult {
+  word: string;
+  startMs: number;
+}
 export interface TTSResult {
   audio: Uint8Array;
   durationMs: number;
   ext: "wav" | "mp3";
+  wordTimings: WordTimingResult[];
 }
 export interface TTSProvider {
   readonly key: string;
