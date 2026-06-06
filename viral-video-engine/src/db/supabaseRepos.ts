@@ -3,7 +3,7 @@ import type { Article, Brand, Job, JobType, GeneratedContent, Post, PostAssets }
 import type { ArticlesRepo, BrandsRepo, JobsRepo, NewJob, PostsRepo } from "./repositories.js";
 import { decideFailState } from "../queue/logic.js";
 
-function rowToBrand(r: Record<string, any>): Brand {
+export function rowToBrand(r: Record<string, any>): Brand {
   return {
     id: r.id, name: r.name, siteUrl: r.site_url, wpApiBase: r.wp_api_base,
     niche: r.niche, tone: r.tone, useFeaturedImageBeat: r.use_featured_image_beat, active: r.active,
@@ -124,7 +124,7 @@ export class SupabaseJobsRepo implements JobsRepo {
   }
 }
 
-function rowToPost(r: Record<string, any>): Post {
+export function rowToPost(r: Record<string, any>): Post {
   return {
     id: r.id, articleId: r.article_id, brandId: r.brand_id, script: r.script,
     caption: r.caption, hashtags: r.hashtags ?? [], status: r.status,
@@ -171,6 +171,8 @@ export class SupabasePostsRepo implements PostsRepo {
       voiceover_url: assets.voiceoverUrl,
       voiceover_duration_ms: assets.voiceoverDurationMs,
       clip_urls: assets.clipUrls,
+      word_timings: assets.wordTimings,
+      segments: assets.segments,
       updated_at: new Date().toISOString(),
     }).eq("id", postId);
     if (error) throw error;
