@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Article, Brand, Job, JobType } from "../types/domain.js";
-import type { ArticlesRepo, BrandsRepo, JobsRepo, NewJob } from "./repositories.js";
+import type { Article, Brand, Job, JobType, GeneratedContent, Post } from "../types/domain.js";
+import type { ArticlesRepo, BrandsRepo, JobsRepo, NewJob, PostsRepo } from "./repositories.js";
 import { decideFailState } from "../queue/logic.js";
 
 function rowToBrand(r: Record<string, any>): Brand {
@@ -119,5 +119,34 @@ export class SupabaseJobsRepo implements JobsRepo {
           };
     const { error: upErr } = await this.sb.from("jobs").update(patch).eq("id", id);
     if (upErr) throw upErr;
+  }
+}
+
+function rowToPost(r: Record<string, any>): Post {
+  return {
+    id: r.id, articleId: r.article_id, brandId: r.brand_id, script: r.script,
+    caption: r.caption, hashtags: r.hashtags ?? [], status: r.status,
+    createdAt: new Date(r.created_at).toISOString(),
+  };
+}
+
+export class SupabasePostsRepo implements PostsRepo {
+  constructor(private sb: SupabaseClient) {}
+
+  async upsertForArticle(articleId: string, brandId: string, content: GeneratedContent): Promise<Post> {
+    const { data, error } = await this.sb.from("posts")
+      .upsert({
+        article_id: articleId, brand_id: brandId, script: content.script,
+        caption: content.caption, hashtags: content.hashtags, updated_at: new Date().toISOString(),
+      }, { onConflict: "article_id" })
+      .select("*").single();
+    if (error) throw error;
+    return rowToPost(data);
+  }
+
+  async getByArticleId(articleId: string): Promise<Post | null> {
+    const { data, error } = await this.sb.from("posts").select("*").eq("article_id", articleId).maybeSingle();
+    if (error) throw error;
+    return data ? rowToPost(data) : null;
   }
 }
