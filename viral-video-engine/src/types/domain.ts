@@ -30,7 +30,7 @@ export type Article = z.infer<typeof ArticleSchema>;
 export const JobTypeSchema = z.enum(["scan", "generate", "assets", "render", "publish"]);
 export type JobType = z.infer<typeof JobTypeSchema>;
 
-export const JobStatusSchema = z.enum(["queued", "processing", "done", "failed", "dead"]);
+export const JobStatusSchema = z.enum(["queued", "processing", "done", "dead"]);
 export type JobStatus = z.infer<typeof JobStatusSchema>;
 
 export const JobSchema = z.object({
