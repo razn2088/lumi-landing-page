@@ -5,30 +5,37 @@ import { SupabaseBrandsRepo, SupabaseArticlesRepo, SupabaseJobsRepo, SupabasePos
 import { ProviderRegistry } from "../providers/registry.js";
 import { ProviderRouter } from "../providers/router.js";
 import { createAnthropicProvider } from "../providers/llm/anthropic.js";
-import { buildHandlers } from "../worker/handlers.js";
+import { GoogleTTSProvider } from "../providers/tts/google.js";
+import { PexelsStockProvider } from "../providers/stock/pexels.js";
+import { SupabaseStorageClient } from "../storage/supabase.js";
+import { buildHandlers, buildAssetsHandlers } from "../worker/handlers.js";
 import { drain } from "../worker/runtime.js";
 
 async function main() {
   const cfg = loadConfig();
-  if (!cfg.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY is required to process generate jobs.");
+  if (!cfg.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY is required.");
 
   const sb = createSupabaseClient(cfg);
   const brands = new SupabaseBrandsRepo(sb);
   const articles = new SupabaseArticlesRepo(sb);
   const posts = new SupabasePostsRepo(sb);
   const jobs = new SupabaseJobsRepo(sb);
+  const storage = new SupabaseStorageClient(sb, cfg.STORAGE_BUCKET);
 
   const reg = new ProviderRegistry();
   reg.register("llm", "claude", createAnthropicProvider(cfg.ANTHROPIC_API_KEY, cfg.ANTHROPIC_MODEL));
+  if (cfg.GOOGLE_TTS_API_KEY) reg.register("tts", "google", new GoogleTTSProvider(cfg.GOOGLE_TTS_API_KEY));
+  if (cfg.PEXELS_API_KEY) reg.register("stock", "pexels", new PexelsStockProvider(cfg.PEXELS_API_KEY));
   const router = new ProviderRouter(reg);
 
-  const handlers = buildHandlers({ brands, articles, posts, jobs, router, llmChain: ["claude"] });
-  console.log("Draining generate jobs ...");
+  const handlers = {
+    ...buildHandlers({ brands, articles, posts, jobs, router, llmChain: ["claude"] }),
+    ...buildAssetsHandlers({ brands, articles, posts, jobs, storage, router, ttsChain: ["google"], stockChain: ["pexels"] }),
+  };
+
+  console.log("Draining generate + assets jobs ...");
   const processed = await drain({ jobs, workerId: cfg.WORKER_ID, handlers });
   console.log(`Processed ${processed} job(s).`);
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+main().catch((e) => { console.error(e); process.exit(1); });
