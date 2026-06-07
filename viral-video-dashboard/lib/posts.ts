@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { DashboardBrand, DashboardPost, PostStatus } from "./types.js";
+import type { DashboardBrand, DashboardPost, PostStatus } from "./types";
 
 type EmbeddedBrand = { name?: string | null; handle?: string | null };
 

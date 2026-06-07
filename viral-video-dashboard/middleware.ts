@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { createMiddlewareClient } from "./lib/supabase/ssr.js";
-import { isAllowedEmail } from "./lib/auth.js";
+import { createMiddlewareClient } from "./lib/supabase/ssr";
+import { isAllowedEmail } from "./lib/auth";
 
 const PUBLIC_PATHS = ["/login", "/auth/callback"];
 
