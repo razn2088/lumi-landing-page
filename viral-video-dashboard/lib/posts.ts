@@ -34,3 +34,8 @@ export async function getBrands(sb: SupabaseClient<any, any, any>): Promise<Dash
   if (error) throw error;
   return (data ?? []).map((r: Record<string, any>) => ({ id: r.id, name: r.name }));
 }
+
+export async function setPostStatus(sb: SupabaseClient<any, any, any>, id: string, status: PostStatus): Promise<void> {
+  const { error } = await sb.from("posts").update({ status }).eq("id", id);
+  if (error) throw new Error(error.message);
+}

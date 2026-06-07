@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { rowToPost } from "../lib/posts.js";
+import { rowToPost, setPostStatus } from "../lib/posts.js";
 
 describe("rowToPost", () => {
   it("maps a joined post row (brands embedded as object)", () => {
@@ -28,5 +28,24 @@ describe("rowToPost", () => {
     expect(post.brandHandle).toBe("");
     expect(post.hashtags).toEqual([]);
     expect(post.videoUrl).toBeNull();
+  });
+});
+
+describe("setPostStatus", () => {
+  it("updates the post status by id", async () => {
+    const calls: any[] = [];
+    const fakeSb: any = {
+      from: () => ({
+        update: (patch: any) => { calls.push(["update", patch]); return { eq: (col: string, val: string) => { calls.push(["eq", col, val]); return Promise.resolve({ error: null }); } }; },
+      }),
+    };
+    await setPostStatus(fakeSb, "p1", "approved");
+    expect(calls).toContainEqual(["update", { status: "approved" }]);
+    expect(calls).toContainEqual(["eq", "id", "p1"]);
+  });
+
+  it("throws on a supabase error", async () => {
+    const fakeSb: any = { from: () => ({ update: () => ({ eq: () => Promise.resolve({ error: { message: "boom" } }) }) }) };
+    await expect(setPostStatus(fakeSb, "p1", "rejected")).rejects.toThrow("boom");
   });
 });
