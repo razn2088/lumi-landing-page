@@ -4,7 +4,7 @@ import { isAllowedEmail } from "./lib/auth";
 
 const PUBLIC_PATHS = ["/login", "/auth/callback"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   if (PUBLIC_PATHS.some((p) => pathname.startsWith(p))) return NextResponse.next();
 
