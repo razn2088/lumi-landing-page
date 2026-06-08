@@ -57,3 +57,18 @@ export interface MusicSource {
   listFiles(folderId: string): Promise<MusicFileMeta[]>;
   download(fileId: string): Promise<Uint8Array>;
 }
+
+export interface PublishRequest {
+  videoUrl: string;
+  caption: string;
+  igUserId: string;
+  accessToken: string;
+}
+export interface PublishResult {
+  mediaId: string;
+  permalink: string;
+}
+export interface Publisher {
+  readonly key: string;
+  publish(req: PublishRequest): Promise<PublishResult>;
+}
