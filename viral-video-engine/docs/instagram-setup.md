@@ -14,5 +14,6 @@ One-time setup so the engine can post Reels to a brand's Instagram. Works in the
    where id = 'topdealsus';
    ```
 7. Token expires in ~60 days; re-run step 4 and update the row to refresh.
+8. **Publish** -> once a post is `approved` (via the dashboard) and has a `video_url`, run `npm run publish-ig`. It posts every approved post for IG-enabled brands and marks each `published` (with the `ig_permalink`) or `publish_failed`.
 
 Limits in dev mode: ~50 published posts per account per 24h (far above this project's volume).
