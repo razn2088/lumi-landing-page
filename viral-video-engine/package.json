@@ -13,7 +13,8 @@
     "scan": "tsx src/cli/runOnce.ts",
     "process": "tsx src/cli/processJobs.ts",
     "sync-music": "tsx src/cli/syncMusic.ts",
-    "render": "tsx src/cli/render.ts"
+    "render": "tsx src/cli/render.ts",
+    "publish-ig": "tsx src/cli/publish.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.101.0",
