@@ -13,6 +13,9 @@ export const BrandSchema = z.object({
   logoUrl: z.string().url().nullable().default(null),
   brandColor: z.string().default("#ffd60a"),
   musicDriveFolderId: z.string().nullable().default(null),
+  igUserId: z.string().nullable().optional(),
+  igAccessToken: z.string().nullable().optional(),
+  igEnabled: z.boolean().optional(),
 });
 export type Brand = z.infer<typeof BrandSchema>;
 
@@ -108,5 +111,8 @@ export const PostSchema = z.object({
   videoUrl: z.string().url().nullable().default(null),
   status: z.string().default("pending_review"),
   createdAt: z.string(),
+  igMediaId: z.string().nullable().optional(),
+  igPermalink: z.string().nullable().optional(),
+  lastPublishError: z.string().nullable().optional(),
 });
 export type Post = z.infer<typeof PostSchema>;
