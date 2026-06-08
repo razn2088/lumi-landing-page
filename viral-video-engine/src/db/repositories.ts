@@ -35,4 +35,7 @@ export interface PostsRepo {
   getById(postId: string): Promise<Post | null>;
   saveAssets(postId: string, assets: PostAssets): Promise<void>;
   saveRender(postId: string, videoUrl: string): Promise<void>;
+  listByStatus(status: string): Promise<Post[]>;
+  markPublished(postId: string, mediaId: string, permalink: string): Promise<void>;
+  markPublishFailed(postId: string, error: string): Promise<void>;
 }

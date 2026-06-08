@@ -131,4 +131,19 @@ export class MemoryPostsRepo implements PostsRepo {
     }
     throw new Error(`Post not found: ${postId}`);
   }
+  async listByStatus(status: string): Promise<Post[]> {
+    return [...this.byArticle.values()].filter((p) => p.status === status);
+  }
+  async markPublished(postId: string, mediaId: string, permalink: string): Promise<void> {
+    for (const p of this.byArticle.values()) {
+      if (p.id === postId) { p.status = "published"; p.igMediaId = mediaId; p.igPermalink = permalink; return; }
+    }
+    throw new Error(`Post not found: ${postId}`);
+  }
+  async markPublishFailed(postId: string, error: string): Promise<void> {
+    for (const p of this.byArticle.values()) {
+      if (p.id === postId) { p.status = "publish_failed"; p.lastPublishError = error; return; }
+    }
+    throw new Error(`Post not found: ${postId}`);
+  }
 }

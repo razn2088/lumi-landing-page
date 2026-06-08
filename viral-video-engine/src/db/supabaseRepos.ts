@@ -9,6 +9,7 @@ export function rowToBrand(r: Record<string, any>): Brand {
     niche: r.niche, tone: r.tone, useFeaturedImageBeat: r.use_featured_image_beat, active: r.active,
     handle: r.handle ?? "", logoUrl: r.logo_url ?? null,
     brandColor: r.brand_color ?? "#ffd60a", musicDriveFolderId: r.music_drive_folder_id ?? null,
+    igUserId: r.ig_user_id ?? null, igAccessToken: r.ig_access_token ?? null, igEnabled: r.ig_enabled ?? false,
   };
 }
 
@@ -130,6 +131,9 @@ export function rowToPost(r: Record<string, any>): Post {
     caption: r.caption, hashtags: r.hashtags ?? [], status: r.status,
     createdAt: new Date(r.created_at).toISOString(),
     videoUrl: r.video_url ?? null,
+    igMediaId: r.ig_media_id ?? null,
+    igPermalink: r.ig_permalink ?? null,
+    lastPublishError: r.last_publish_error ?? null,
     assets: r.voiceover_url
       ? {
           voiceoverUrl: r.voiceover_url,
@@ -184,5 +188,22 @@ export class SupabasePostsRepo implements PostsRepo {
       updated_at: new Date().toISOString(),
     }).eq("id", postId);
     if (error) throw error;
+  }
+  async listByStatus(status: string): Promise<Post[]> {
+    const { data, error } = await this.sb.from("posts").select("*").eq("status", status).order("created_at", { ascending: true });
+    if (error) throw error;
+    return (data ?? []).map(rowToPost);
+  }
+  async markPublished(postId: string, mediaId: string, permalink: string): Promise<void> {
+    const { error } = await this.sb.from("posts").update({
+      status: "published", ig_media_id: mediaId, ig_permalink: permalink, last_publish_error: null, updated_at: new Date().toISOString(),
+    }).eq("id", postId);
+    if (error) throw error;
+  }
+  async markPublishFailed(postId: string, error: string): Promise<void> {
+    const { error: upErr } = await this.sb.from("posts").update({
+      status: "publish_failed", last_publish_error: error, updated_at: new Date().toISOString(),
+    }).eq("id", postId);
+    if (upErr) throw upErr;
   }
 }
