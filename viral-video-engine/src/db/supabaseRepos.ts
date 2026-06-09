@@ -131,6 +131,7 @@ export function rowToPost(r: Record<string, any>): Post {
     caption: r.caption, hashtags: r.hashtags ?? [], status: r.status,
     createdAt: new Date(r.created_at).toISOString(),
     videoUrl: r.video_url ?? null,
+    publishAt: r.publish_at ?? null,
     igMediaId: r.ig_media_id ?? null,
     igPermalink: r.ig_permalink ?? null,
     lastPublishError: r.last_publish_error ?? null,

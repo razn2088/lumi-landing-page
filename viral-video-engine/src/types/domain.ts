@@ -110,6 +110,7 @@ export const PostSchema = z.object({
   hashtags: z.array(z.string()).default([]),
   assets: PostAssetsSchema.optional(),
   videoUrl: z.string().url().nullable().default(null),
+  publishAt: z.string().nullable().optional(),
   status: z.string().default("pending_review"),
   createdAt: z.string(),
   igMediaId: z.string().nullable().optional(),
