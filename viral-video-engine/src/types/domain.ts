@@ -14,6 +14,7 @@ export const BrandSchema = z.object({
   brandColor: z.string().default("#ffd60a"),
   musicDriveFolderId: z.string().nullable().default(null),
   igUserId: z.string().nullable().optional(),
+  igUsername: z.string().nullable().optional(),
   igAccessToken: z.string().nullable().optional(),
   igEnabled: z.boolean().optional(),
 });
