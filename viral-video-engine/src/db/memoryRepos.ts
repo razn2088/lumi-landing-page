@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { Article, Brand, Job, JobType, GeneratedContent, Post, PostAssets } from "../types/domain.js";
-import type { ArticlesRepo, BrandsRepo, JobsRepo, NewJob, PostsRepo } from "./repositories.js";
+import type { ArticlesRepo, BrandsRepo, ConfigRepo, JobsRepo, NewJob, PostsRepo } from "./repositories.js";
 import { decideFailState } from "../queue/logic.js";
 
 export class MemoryBrandsRepo implements BrandsRepo {
@@ -146,4 +146,10 @@ export class MemoryPostsRepo implements PostsRepo {
     }
     throw new Error(`Post not found: ${postId}`);
   }
+}
+
+export class MemoryConfigRepo implements ConfigRepo {
+  private values = new Map<string, string>();
+  seed(key: string, value: string) { this.values.set(key, value); }
+  async get(key: string): Promise<string | null> { return this.values.get(key) ?? null; }
 }

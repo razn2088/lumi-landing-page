@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Article, Brand, Job, JobType, GeneratedContent, Post, PostAssets } from "../types/domain.js";
-import type { ArticlesRepo, BrandsRepo, JobsRepo, NewJob, PostsRepo } from "./repositories.js";
+import type { ArticlesRepo, BrandsRepo, ConfigRepo, JobsRepo, NewJob, PostsRepo } from "./repositories.js";
 import { decideFailState } from "../queue/logic.js";
 
 export function rowToBrand(r: Record<string, any>): Brand {
@@ -9,7 +9,7 @@ export function rowToBrand(r: Record<string, any>): Brand {
     niche: r.niche, tone: r.tone, useFeaturedImageBeat: r.use_featured_image_beat, active: r.active,
     handle: r.handle ?? "", logoUrl: r.logo_url ?? null,
     brandColor: r.brand_color ?? "#ffd60a", musicDriveFolderId: r.music_drive_folder_id ?? null,
-    igUserId: r.ig_user_id ?? null, igAccessToken: r.ig_access_token ?? null, igEnabled: r.ig_enabled ?? false,
+    igUserId: r.ig_user_id ?? null, igUsername: r.ig_username ?? null, igAccessToken: r.ig_access_token ?? null, igEnabled: r.ig_enabled ?? false,
   };
 }
 
@@ -205,5 +205,14 @@ export class SupabasePostsRepo implements PostsRepo {
       status: "publish_failed", last_publish_error: error, updated_at: new Date().toISOString(),
     }).eq("id", postId);
     if (upErr) throw upErr;
+  }
+}
+
+export class SupabaseConfigRepo implements ConfigRepo {
+  constructor(private sb: SupabaseClient) {}
+  async get(key: string): Promise<string | null> {
+    const { data, error } = await this.sb.from("app_config").select("value").eq("key", key).maybeSingle();
+    if (error) throw error;
+    return data?.value ?? null;
   }
 }

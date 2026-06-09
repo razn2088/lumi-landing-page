@@ -39,3 +39,7 @@ export interface PostsRepo {
   markPublished(postId: string, mediaId: string, permalink: string): Promise<void>;
   markPublishFailed(postId: string, error: string): Promise<void>;
 }
+
+export interface ConfigRepo {
+  get(key: string): Promise<string | null>;
+}
