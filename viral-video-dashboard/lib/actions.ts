@@ -34,3 +34,25 @@ export async function disconnectBrandAction(formData: FormData): Promise<void> {
   if (brandId) await disconnectBrandAccount(brandId);
   revalidatePath("/connections");
 }
+
+import { parseSelectedIds, enqueueGenerateJobs, setApproval } from "./jobs";
+
+export async function createVideosAction(formData: FormData): Promise<void> {
+  await enqueueGenerateJobs(parseSelectedIds(formData));
+  revalidatePath("/articles");
+}
+
+export async function approveWithScheduleAction(formData: FormData): Promise<void> {
+  const id = String(formData.get("postId") ?? "");
+  const raw = String(formData.get("publishAt") ?? "").trim();
+  const publishAtIso = raw ? new Date(raw).toISOString() : null;
+  if (id) await setApproval(id, publishAtIso);
+  revalidatePath("/review");
+}
+
+export async function reschedulePublishAction(formData: FormData): Promise<void> {
+  const id = String(formData.get("postId") ?? "");
+  const raw = String(formData.get("publishAt") ?? "").trim();
+  if (id) await setApproval(id, raw ? new Date(raw).toISOString() : null);
+  revalidatePath("/review");
+}
