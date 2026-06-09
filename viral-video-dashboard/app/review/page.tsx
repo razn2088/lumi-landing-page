@@ -21,6 +21,7 @@ export default async function ReviewPage({ searchParams }: { searchParams: Promi
     <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <header style={{ display: "flex", alignItems: "center", gap: 16, padding: "12px 16px", background: "#0f1830", color: "#fff" }}>
         <span style={{ fontWeight: 700 }}>▦ Viral Studio</span>
+        <Link href="/articles" style={{ color: "#cdd6e6", textDecoration: "none", fontWeight: 600 }}>Articles</Link>
         <Link href="/connections" style={{ color: "#cdd6e6", textDecoration: "none", fontWeight: 600, marginRight: 4 }}>Connections</Link>
         <StatusTabs status={status} brandId={brandId} />
         <BrandFilter brands={brands} status={status} brandId={brandId} />
