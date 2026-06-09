@@ -14,27 +14,24 @@ const brand: Brand = {
 };
 
 describe("scanBrand", () => {
-  it("inserts new articles and enqueues one generate job each", async () => {
+  it("inserts new articles and enqueues no generate jobs", async () => {
     const articles = new MemoryArticlesRepo();
     const jobs = new MemoryJobsRepo();
     const wp = new FakeWordPressClient(posts as WpPost[]);
 
-    const result = await scanBrand(brand, { wp, articles, jobs });
+    const result = await scanBrand(brand, { wp, articles });
 
-    expect(result).toEqual({ scanned: 2, inserted: 2, enqueued: 2 });
-    const claimed = await jobs.claim(["generate"], "w1");
-    expect(claimed?.type).toBe("generate");
-    expect(typeof claimed?.payload.articleId).toBe("string");
+    expect(result).toEqual({ scanned: 2, inserted: 2 });
+    expect(await jobs.claim(["generate"], "w1")).toBeNull();
   });
 
   it("is idempotent — a second scan of the same posts inserts nothing", async () => {
     const articles = new MemoryArticlesRepo();
-    const jobs = new MemoryJobsRepo();
     const wp = new FakeWordPressClient(posts as WpPost[]);
 
-    await scanBrand(brand, { wp, articles, jobs });
-    const second = await scanBrand(brand, { wp, articles, jobs });
+    await scanBrand(brand, { wp, articles });
+    const second = await scanBrand(brand, { wp, articles });
 
-    expect(second).toEqual({ scanned: 2, inserted: 0, enqueued: 0 });
+    expect(second).toEqual({ scanned: 2, inserted: 0 });
   });
 });
