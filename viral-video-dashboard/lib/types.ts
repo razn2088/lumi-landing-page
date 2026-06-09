@@ -12,6 +12,7 @@ export interface DashboardPost {
   caption: string;
   hashtags: string[];
   videoUrl: string | null;
+  publishAt: string | null;
   status: string;
   createdAt: string;
 }

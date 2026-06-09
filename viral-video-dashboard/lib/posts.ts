@@ -14,12 +14,13 @@ export function rowToPost(r: Record<string, any>): DashboardPost {
     caption: r.caption ?? "",
     hashtags: r.hashtags ?? [],
     videoUrl: r.video_url ?? null,
+    publishAt: r.publish_at ?? null,
     status: r.status,
     createdAt: r.created_at,
   };
 }
 
-const SELECT = "id,brand_id,script,caption,hashtags,video_url,status,created_at,brands(name,handle)";
+const SELECT = "id,brand_id,script,caption,hashtags,video_url,publish_at,status,created_at,brands(name,handle)";
 
 export async function listPosts(sb: SupabaseClient<any, any, any>, status: PostStatus, brandId?: string): Promise<DashboardPost[]> {
   let q = sb.from("posts").select(SELECT).eq("status", status).order("created_at", { ascending: false });
