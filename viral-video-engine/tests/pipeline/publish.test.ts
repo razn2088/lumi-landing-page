@@ -54,4 +54,20 @@ describe("publishApprovedPosts", () => {
     const res = await publishApprovedPosts(deps(brands, posts, null));
     expect(res.published).toBe(0);
   });
+
+  it("skips an approved post scheduled in the future, publishes a due one", async () => {
+    const brands = new MemoryBrandsRepo([BrandSchema.parse({ id: "topdealsus", name: "T", siteUrl: "https://t.com", wpApiBase: "https://x/api", igEnabled: true, igUserId: "IG1" })]);
+    const posts = new MemoryPostsRepo();
+    const future = await posts.upsertForArticle("55555555-5555-5555-5555-555555555555", "topdealsus", content as any);
+    await posts.saveRender(future.id, "https://v/f.mp4");
+    const futureObj = (await posts.getById(future.id))!; futureObj.status = "approved"; futureObj.publishAt = "2999-01-01T00:00:00.000Z";
+    const due = await posts.upsertForArticle("66666666-6666-6666-6666-666666666666", "topdealsus", content as any);
+    await posts.saveRender(due.id, "https://v/d.mp4");
+    const dueObj = (await posts.getById(due.id))!; dueObj.status = "approved"; dueObj.publishAt = "2000-01-01T00:00:00.000Z";
+
+    const res = await publishApprovedPosts(deps(brands, posts));
+    expect(res.published).toBe(1);
+    expect((await posts.getById(due.id))!.status).toBe("published");
+    expect((await posts.getById(future.id))!.status).toBe("approved");
+  });
 });

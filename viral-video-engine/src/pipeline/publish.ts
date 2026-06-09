@@ -17,9 +17,11 @@ export async function publishApprovedPosts(deps: PublishDeps): Promise<PublishSu
   const summary: PublishSummary = { published: 0, failed: 0, skipped: 0 };
   const token = await deps.config.get("ig_system_user_token");
   const approved = await deps.posts.listByStatus("approved");
+  const nowMs = Date.now();
   if (!token) { summary.skipped = approved.length; return summary; }
 
   for (const post of approved) {
+    if (post.publishAt && Date.parse(post.publishAt) > nowMs) { summary.skipped += 1; continue; }
     if (!post.videoUrl) { summary.skipped += 1; continue; }
     const brand = await deps.brands.getById(post.brandId);
     if (!brand?.igEnabled || !brand.igUserId) { summary.skipped += 1; continue; }
