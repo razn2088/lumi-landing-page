@@ -22,13 +22,15 @@ export function ReviewPanel({ post }: { post: DashboardPost | null }) {
         </div>
 
         {pending ? (
-          <form action={approveWithScheduleAction} style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
-            <input type="hidden" name="postId" value={post.id} />
-            <label style={{ fontSize: 13, color: "#556" }}>Publish at <input type="datetime-local" name="publishAt" style={{ marginLeft: 6, padding: "6px 8px", border: "1px solid #cdd6e6", borderRadius: 6 }} /></label>
-            <span style={{ fontSize: 12, color: "#889" }}>(leave empty = now)</span>
-            <button style={{ background: "#1eb980", color: "#fff", border: 0, borderRadius: 8, padding: "9px 22px", fontWeight: 700, cursor: "pointer" }}>Approve</button>
+          <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+            <form action={approveWithScheduleAction} style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+              <input type="hidden" name="postId" value={post.id} />
+              <label style={{ fontSize: 13, color: "#556" }}>Publish at <input type="datetime-local" name="publishAt" style={{ marginLeft: 6, padding: "6px 8px", border: "1px solid #cdd6e6", borderRadius: 6 }} /></label>
+              <span style={{ fontSize: 12, color: "#889" }}>(leave empty = now)</span>
+              <button style={{ background: "#1eb980", color: "#fff", border: 0, borderRadius: 8, padding: "9px 22px", fontWeight: 700, cursor: "pointer" }}>Approve</button>
+            </form>
             <form action={rejectPost.bind(null, post.id)}><button style={{ background: "#e5484d", color: "#fff", border: 0, borderRadius: 8, padding: "9px 22px", fontWeight: 700, cursor: "pointer" }}>Reject</button></form>
-          </form>
+          </div>
         ) : approved ? (
           <div>
             <div style={{ fontSize: 13, color: "#1eb980", fontWeight: 700, marginBottom: 8 }}>Approved · {post.publishAt ? `scheduled ${new Date(post.publishAt).toLocaleString()}` : "publishing now"}</div>
