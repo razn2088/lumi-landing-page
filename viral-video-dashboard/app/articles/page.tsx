@@ -8,13 +8,14 @@ const TABS: { key: string; label: string }[] = [
   { key: "new", label: "New" }, { key: "in_progress", label: "In progress" }, { key: "created", label: "Created" }, { key: "all", label: "All" },
 ];
 const CHIP: Record<ArticleStatus, { bg: string; fg: string; label: string }> = {
-  new: { bg: "#eef1f5", fg: "#556", label: "New" }, in_progress: { bg: "#fff7d6", fg: "#8a6d00", label: "In progress" }, created: { bg: "#dff5ec", fg: "#1eb980", label: "Created" },
+  new: { bg: "#eef1f5", fg: "#556", label: "New" }, in_progress: { bg: "#fff7d6", fg: "#8a6d00", label: "In progress" }, created: { bg: "#dff5ec", fg: "#1eb980", label: "Created" }, published: { bg: "#d7f3e7", fg: "#128a5e", label: "Published" },
 };
 
-export default async function ArticlesPage({ searchParams }: { searchParams: Promise<{ filter?: string }> }) {
+export default async function ArticlesPage({ searchParams }: { searchParams: Promise<{ filter?: string; brand?: string }> }) {
   const sp = await searchParams;
   const filter = sp.filter ?? "new";
-  const all = await getArticles();
+  if (!sp.brand) return <div style={{ padding: 24, color: "#889" }}>Select a website to view its articles.</div>;
+  const all = await getArticles(sp.brand);
   const articles = filter === "all" ? all : all.filter((a) => a.status === filter);
 
   return (
