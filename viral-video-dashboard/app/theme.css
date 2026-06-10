@@ -104,6 +104,24 @@ h1, h2, h3 {
 /* Brand selector pill + ghost button hover (consumed by ui kit) */
 .vs-pill { transition: transform .15s var(--ease), box-shadow .15s var(--ease), border-color .15s var(--ease); }
 .vs-pill:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+
+/* Filter tab hover (Articles page) */
+.vs-tab { transition: background .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease); }
+.vs-tab:not([data-active="true"]):hover { background: var(--surface-2); border-color: #d9dfe9; }
+
+/* Article list row — full-width hover wash + a left accent rail that
+   slides in. Selectable (new) rows get a slightly stronger affordance. */
+.vs-row { position: relative; transition: background .15s var(--ease); }
+.vs-row::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--accent); transform: scaleY(0); transform-origin: center;
+  transition: transform .18s var(--ease);
+}
+.vs-row:hover { background: var(--surface-2); }
+.vs-row[data-selectable="true"]:hover::before { transform: scaleY(1); }
+.vs-row:last-child { border-bottom: 0 !important; }
+.vs-row .vs-check { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; flex-shrink: 0; }
+.vs-row .vs-check:disabled { cursor: default; opacity: .45; }
 .vs-btn { transition: transform .12s var(--ease), filter .15s var(--ease), box-shadow .15s var(--ease); }
 .vs-btn:hover { filter: brightness(1.04); }
 .vs-btn:active { transform: translateY(1px); }
