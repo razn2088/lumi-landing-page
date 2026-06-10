@@ -34,6 +34,18 @@ describe("HttpWordPressClient", () => {
     const client = new HttpWordPressClient();
     await expect(client.fetchRecentPosts(brand)).rejects.toThrow("503");
   });
+
+  it("paginates through every page using X-WP-TotalPages", async () => {
+    const spy = vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(new Response(JSON.stringify([posts[0]]), { status: 200, headers: { "x-wp-totalpages": "2" } }))
+      .mockResolvedValueOnce(new Response(JSON.stringify([posts[1]]), { status: 200, headers: { "x-wp-totalpages": "2" } }));
+    const client = new HttpWordPressClient();
+    const result = await client.fetchRecentPosts(brand);
+    expect(result).toHaveLength(2);
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(spy.mock.calls[0]![0] as string).toContain("page=1");
+    expect(spy.mock.calls[1]![0] as string).toContain("page=2");
+  });
 });
 
 describe("FakeWordPressClient", () => {

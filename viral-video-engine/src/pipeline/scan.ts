@@ -14,8 +14,9 @@ export interface ScanResult {
 }
 
 export async function scanBrand(brand: Brand, deps: ScanDeps): Promise<ScanResult> {
-  const after = (await deps.articles.latestPublishedAt(brand.id)) ?? undefined;
-  const posts = await deps.wp.fetchRecentPosts(brand, { after });
+  // Fetch the full published list (paginated) and dedup by content hash, so every
+  // article on the site is ingested — not just those newer than the latest we have.
+  const posts = await deps.wp.fetchRecentPosts(brand);
   const ordered = [...posts].sort((a, b) => a.date_gmt.localeCompare(b.date_gmt));
 
   let inserted = 0;
