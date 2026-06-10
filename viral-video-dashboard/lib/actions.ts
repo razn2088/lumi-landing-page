@@ -51,3 +51,23 @@ export async function reschedulePublishAction(formData: FormData): Promise<void>
   if (id) await setApproval(id, raw ? new Date(raw).toISOString() : null);
   revalidatePath("/review");
 }
+
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { GATE_COOKIE, gateToken, sha256Hex, timingSafeEqual } from "./gate";
+
+export async function gateLoginAction(formData: FormData): Promise<void> {
+  const password = process.env.DASHBOARD_PASSWORD ?? "";
+  const submitted = String(formData.get("password") ?? "");
+  // Hash both sides so the constant-time compare never leaks the password length.
+  const ok = password.length > 0 && timingSafeEqual(await sha256Hex(submitted), await sha256Hex(password));
+  if (!ok) redirect("/gate?error=1");
+  (await cookies()).set(GATE_COOKIE, await gateToken(password), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30,
+  });
+  redirect("/");
+}
