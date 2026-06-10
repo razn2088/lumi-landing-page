@@ -97,6 +97,17 @@ h1, h2, h3 {
 .vs-nav-link .vs-nav-icon { transition: transform .18s var(--ease); }
 .vs-nav-link:hover .vs-nav-icon { transform: translateX(2px); }
 
+/* Linked Instagram badge — subtle lift on hover */
+.vs-badge-link { transition: transform .15s var(--ease), box-shadow .15s var(--ease); }
+.vs-badge-link:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(214, 41, 118, .42) !important; }
+
+/* Brand selector pill + ghost button hover (consumed by ui kit) */
+.vs-pill { transition: transform .15s var(--ease), box-shadow .15s var(--ease), border-color .15s var(--ease); }
+.vs-pill:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+.vs-btn { transition: transform .12s var(--ease), filter .15s var(--ease), box-shadow .15s var(--ease); }
+.vs-btn:hover { filter: brightness(1.04); }
+.vs-btn:active { transform: translateY(1px); }
+
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
 }
