@@ -7,6 +7,8 @@ describe("deriveArticleStatus", () => {
   it("published when post is published", () => expect(deriveArticleStatus({ status: "published", video_url: "v.mp4" })).toBe("published"));
   it("created when rendered with video", () => expect(deriveArticleStatus({ status: "rendered", video_url: "v.mp4" })).toBe("created"));
   it("created when approved with video", () => expect(deriveArticleStatus({ status: "approved", video_url: "v.mp4" })).toBe("created"));
+  it("in_progress when no post but a generate job is in flight", () => expect(deriveArticleStatus(null, true)).toBe("in_progress"));
+  it("new when no post and not in flight", () => expect(deriveArticleStatus(null, false)).toBe("new"));
 });
 
 describe("instagramBadge", () => {
@@ -36,5 +38,13 @@ describe("rowToArticle", () => {
       posts: [{ video_url: "v.mp4", status: "published", ig_permalink: "https://insta/p/1" }] });
     expect(r.status).toBe("published");
     expect(r.instagram).toEqual({ platform: "instagram", state: "published", href: "https://insta/p/1" });
+  });
+  it("reads in_progress when no post but the article id is in flight", () => {
+    const r = rowToArticle({ id: "a9", title: "T", brand_id: "b1", published_at: "2026-01-01", posts: [] }, new Set(["a9"]));
+    expect(r.status).toBe("in_progress");
+  });
+  it("stays new when no post and not in flight", () => {
+    const r = rowToArticle({ id: "a9", title: "T", brand_id: "b1", published_at: "2026-01-01", posts: [] }, new Set(["other"]));
+    expect(r.status).toBe("new");
   });
 });

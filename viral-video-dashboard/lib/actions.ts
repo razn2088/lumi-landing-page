@@ -34,7 +34,9 @@ import { parseSelectedIds, enqueueGenerateJobs, setApproval } from "./jobs";
 
 export async function createVideosAction(formData: FormData): Promise<void> {
   await enqueueGenerateJobs(parseSelectedIds(formData));
+  const brandId = String(formData.get("brandId") ?? "");
   revalidatePath("/articles");
+  redirect(brandId ? `/articles?brand=${brandId}&filter=in_progress` : "/articles?filter=in_progress");
 }
 
 export async function approveWithScheduleAction(formData: FormData): Promise<void> {

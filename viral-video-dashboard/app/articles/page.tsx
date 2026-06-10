@@ -123,6 +123,7 @@ export default async function ArticlesPage({
       </div>
 
       <form action={createVideosAction}>
+        <input type="hidden" name="brandId" value={selected.id} />
         <div
           style={{
             display: "flex",
