@@ -14,17 +14,22 @@ export const VideoComposition: FC<RenderProps> = (props) => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#000" }}>
-      {props.segments
-        .filter((s) => s.role !== "cta")
-        .map((seg, i) => {
-          const from = msToFrames(seg.startMs, fps);
-          const dur = Math.max(1, msToFrames(seg.endMs, fps) - from);
+      {props.segments.filter((s) => s.role !== "cta").flatMap((seg, si) => {
+        const clips = seg.clips.length ? seg.clips : (seg.clipUrl ? [seg.clipUrl] : []);
+        if (!clips.length) return [];
+        const segDur = Math.max(1, seg.endMs - seg.startMs);
+        const nShots = Math.max(1, Math.round(segDur / 1800));
+        return Array.from({ length: nShots }, (_, k) => {
+          const from = msToFrames(seg.startMs + (segDur * k) / nShots, fps);
+          const to = msToFrames(seg.startMs + (segDur * (k + 1)) / nShots, fps);
+          const dur = Math.max(1, to - from);
           return (
-            <Sequence key={i} from={from} durationInFrames={dur}>
-              <ClipLayer url={seg.clipUrl} brandColor={props.brandColor} durationInFrames={dur} />
+            <Sequence key={`${si}-${k}`} from={from} durationInFrames={dur}>
+              <ClipLayer url={clips[k % clips.length]!} brandColor={props.brandColor} durationInFrames={dur} />
             </Sequence>
           );
-        })}
+        });
+      })}
 
       <Sequence durationInFrames={ctaStartFrame}>
         <KaraokeCaptions wordTimings={props.wordTimings} brandColor={props.brandColor} />

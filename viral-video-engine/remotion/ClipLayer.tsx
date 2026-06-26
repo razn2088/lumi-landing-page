@@ -6,9 +6,10 @@ export const ClipLayer: FC<{ url: string | null; brandColor: string; durationInF
   const frame = useCurrentFrame();
   if (!url) return <AbsoluteFill style={{ backgroundColor: brandColor }} />;
   if (isVideoUrl(url)) {
+    const vScale = interpolate(frame, [0, Math.max(1, durationInFrames)], [1.0, 1.06], { extrapolateRight: "clamp" });
     return (
       <AbsoluteFill>
-        <OffthreadVideo src={url} muted style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        <OffthreadVideo src={url} muted style={{ width: "100%", height: "100%", objectFit: "cover", transform: `scale(${vScale})` }} />
       </AbsoluteFill>
     );
   }
