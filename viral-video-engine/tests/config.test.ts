@@ -46,3 +46,14 @@ describe("loadConfig", () => {
     expect(loadConfig({ ...base, GOOGLE_SERVICE_ACCOUNT_JSON: "/path/sa.json" }).GOOGLE_SERVICE_ACCOUNT_JSON).toBe("/path/sa.json");
   });
 });
+
+const base = { SUPABASE_URL: "https://x.supabase.co", SUPABASE_SERVICE_ROLE_KEY: "k" };
+
+describe("loadConfig ElevenLabs", () => {
+  it("defaults the voice + model and reads the key", () => {
+    const cfg = loadConfig({ ...base, ELEVENLABS_API_KEY: "sk_test" });
+    expect(cfg.ELEVENLABS_API_KEY).toBe("sk_test");
+    expect(cfg.ELEVENLABS_VOICE_ID).toBe("XrExE9yKIg1WjnnlVkGX");
+    expect(cfg.ELEVENLABS_MODEL).toBe("eleven_multilingual_v2");
+  });
+});
