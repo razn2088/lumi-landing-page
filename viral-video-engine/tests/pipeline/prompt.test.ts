@@ -35,6 +35,13 @@ describe("buildGeneratePrompt", () => {
     expect(system).not.toContain("product_image");
   });
 
+  it("instructs the model never to use em-dashes or en-dashes", () => {
+    const { system } = buildGeneratePrompt(brand, article);
+    expect(system).toMatch(/never use em-dashes/i);
+    expect(system).toContain("—");
+    expect(system).toContain("–");
+  });
+
   it("truncates very long article content", () => {
     const { user } = buildGeneratePrompt(brand, article);
     expect(user.length).toBeLessThan(8000);

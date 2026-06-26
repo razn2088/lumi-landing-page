@@ -11,6 +11,27 @@ function extractJson(text: string): unknown {
   return JSON.parse(candidate.slice(start, end + 1));
 }
 
+export function sanitizeDashes(text: string): string {
+  return text.replace(/[–—]/g, " - ").replace(/ {2,}/g, " ");
+}
+
+function sanitizeGeneratedContent(content: GeneratedContent): GeneratedContent {
+  return {
+    script: {
+      hook: sanitizeDashes(content.script.hook),
+      beats: content.script.beats.map((beat) => ({
+        ...beat,
+        voiceover: sanitizeDashes(beat.voiceover),
+        brollKeywords: beat.brollKeywords.map(sanitizeDashes),
+        onScreenText: beat.onScreenText === undefined ? undefined : sanitizeDashes(beat.onScreenText),
+      })),
+      cta: sanitizeDashes(content.script.cta),
+    },
+    caption: sanitizeDashes(content.caption),
+    hashtags: content.hashtags.map(sanitizeDashes),
+  };
+}
+
 export function parseGeneratedContent(text: string): GeneratedContent {
-  return GeneratedContentSchema.parse(extractJson(text));
+  return sanitizeGeneratedContent(GeneratedContentSchema.parse(extractJson(text)));
 }
