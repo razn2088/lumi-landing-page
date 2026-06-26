@@ -8,6 +8,7 @@ import { createAnthropicProvider } from "../providers/llm/anthropic.js";
 import { GoogleTTSProvider } from "../providers/tts/google.js";
 import { ElevenLabsTTSProvider } from "../providers/tts/elevenlabs.js";
 import { PexelsStockProvider } from "../providers/stock/pexels.js";
+import { FreepikStockProvider } from "../providers/stock/freepik.js";
 import { SupabaseStorageClient } from "../storage/supabase.js";
 import { buildHandlers, buildAssetsHandlers } from "../worker/handlers.js";
 import type { HandlerMap } from "../worker/dispatcher.js";
@@ -28,6 +29,7 @@ async function main() {
   reg.register("llm", "claude", createAnthropicProvider(cfg.ANTHROPIC_API_KEY, cfg.ANTHROPIC_MODEL));
   if (cfg.GOOGLE_TTS_API_KEY) reg.register("tts", "google", new GoogleTTSProvider(cfg.GOOGLE_TTS_API_KEY));
   if (cfg.ELEVENLABS_API_KEY) reg.register("tts", "elevenlabs", new ElevenLabsTTSProvider(cfg.ELEVENLABS_API_KEY, cfg.ELEVENLABS_VOICE_ID, cfg.ELEVENLABS_MODEL, cfg.ELEVENLABS_SPEED));
+  if (cfg.FREEPIK_API_KEY) reg.register("stock", "freepik", new FreepikStockProvider(cfg.FREEPIK_API_KEY));
   if (cfg.PEXELS_API_KEY) reg.register("stock", "pexels", new PexelsStockProvider(cfg.PEXELS_API_KEY));
   const router = new ProviderRouter(reg);
 
@@ -37,11 +39,15 @@ async function main() {
     ...(cfg.ELEVENLABS_API_KEY ? ["elevenlabs"] : []),
     ...(cfg.GOOGLE_TTS_API_KEY ? ["google"] : []),
   ];
-  const assetsEnabled = ttsChain.length > 0 && Boolean(cfg.PEXELS_API_KEY);
+  const stockChain = [
+    ...(cfg.FREEPIK_API_KEY ? ["freepik"] : []),
+    ...(cfg.PEXELS_API_KEY ? ["pexels"] : []),
+  ];
+  const assetsEnabled = ttsChain.length > 0 && stockChain.length > 0;
   if (assetsEnabled) {
-    Object.assign(handlers, buildAssetsHandlers({ brands, articles, posts, jobs, storage, router, ttsChain, stockChain: ["pexels"] }));
+    Object.assign(handlers, buildAssetsHandlers({ brands, articles, posts, jobs, storage, router, ttsChain, stockChain }));
   } else {
-    console.log("(assets handler disabled: set a TTS key (ELEVENLABS_API_KEY or GOOGLE_TTS_API_KEY) + PEXELS_API_KEY to enable; assets jobs stay queued)");
+    console.log("(assets handler disabled: set a TTS key (ELEVENLABS_API_KEY or GOOGLE_TTS_API_KEY) + a stock key (FREEPIK_API_KEY or PEXELS_API_KEY) to enable; assets jobs stay queued)");
   }
 
   console.log(`Draining generate${assetsEnabled ? " + assets" : ""} jobs ...`);

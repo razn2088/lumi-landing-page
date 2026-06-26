@@ -8,6 +8,7 @@ const EnvSchema = z.object({
   ANTHROPIC_MODEL: z.string().default("claude-opus-4-8"),
   GOOGLE_TTS_API_KEY: z.string().optional(),
   PEXELS_API_KEY: z.string().optional(),
+  FREEPIK_API_KEY: z.string().optional(),
   ELEVENLABS_API_KEY: z.string().optional(),
   ELEVENLABS_VOICE_ID: z.string().default("XrExE9yKIg1WjnnlVkGX"),
   ELEVENLABS_MODEL: z.string().default("eleven_multilingual_v2"),
