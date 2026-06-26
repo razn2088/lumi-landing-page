@@ -2,9 +2,11 @@ import type { ArticlesRepo, BrandsRepo, JobsRepo, PostsRepo } from "../db/reposi
 import type { ProviderRouter } from "../providers/router.js";
 import type { StockProvider, TTSProvider, TTSResult } from "../providers/types.js";
 import type { StorageClient } from "../storage/types.js";
-import type { PostAssets } from "../types/domain.js";
+import type { Article, PostAssets } from "../types/domain.js";
 import { buildNarration } from "../text/narration.js";
-import { buildSegments } from "./segments.js";
+import { buildSegments, type BeatPool } from "./segments.js";
+
+const SHOTS_PER_BEAT = 3;
 
 export interface AssetsDeps {
   brands: BrandsRepo;
@@ -16,6 +18,19 @@ export interface AssetsDeps {
   ttsChain: string[];
   stockChain: string[];
   voiceId?: string;
+}
+
+/** A StockProvider that can return several clips at once (e.g. Freepik). */
+interface MultiStockProvider extends StockProvider {
+  searchClips(keywords: string[], count: number): Promise<string[]>;
+}
+function hasSearchClips(p: StockProvider): p is MultiStockProvider {
+  return typeof (p as MultiStockProvider).searchClips === "function";
+}
+
+function productImages(article: Article): string[] {
+  if (article.imageUrls.length) return article.imageUrls;
+  return article.featuredImageUrl ? [article.featuredImageUrl] : [];
 }
 
 export async function buildAssetsForPost(postId: string, deps: AssetsDeps): Promise<PostAssets> {
@@ -36,20 +51,43 @@ export async function buildAssetsForPost(postId: string, deps: AssetsDeps): Prom
   );
 
   const fallback = article.featuredImageUrl;
-  const beatClips: (string | null)[] = [];
+  let uploadIdx = 0;
+  const beatPools: BeatPool[] = [];
   for (const beat of post.script.beats) {
     if (beat.kind === "product_image") {
-      beatClips.push(fallback ?? null);
+      beatPools.push({ clips: productImages(article), clipKind: "image" });
       continue;
     }
-    const clip = await deps.router.call<StockProvider, string | null>(
+    // broll: pull several stock clips; Freepik clips are tokenized so re-upload them.
+    let resolvedKey = "";
+    const found = await deps.router.call<StockProvider, string[]>(
       { capability: "stock", chain: deps.stockChain },
-      (p) => p.searchClip(beat.brollKeywords),
+      async (p) => {
+        resolvedKey = p.key;
+        if (hasSearchClips(p)) return p.searchClips(beat.brollKeywords, SHOTS_PER_BEAT);
+        const out: string[] = [];
+        for (let i = 0; i < SHOTS_PER_BEAT; i++) {
+          const c = await p.searchClip(beat.brollKeywords);
+          if (c) out.push(c);
+        }
+        return out;
+      },
     );
-    beatClips.push(clip ?? fallback ?? null);
+    let clips = found;
+    if (resolvedKey === "freepik") {
+      const stable: string[] = [];
+      for (const url of found) {
+        const bytes = new Uint8Array(await (await fetch(url)).arrayBuffer());
+        stable.push(await deps.storage.upload(`clips/${post.id}/${uploadIdx++}.mp4`, bytes, "video/mp4"));
+      }
+      clips = stable;
+    }
+    if (!clips.length && fallback) beatPools.push({ clips: [fallback], clipKind: "image" });
+    else beatPools.push({ clips, clipKind: "video" });
   }
-  const clipUrls = beatClips.filter((c): c is string => c !== null);
-  const segments = buildSegments(post.script, beatClips, tts.wordTimings, tts.durationMs);
+
+  const clipUrls = [...new Set(beatPools.flatMap((p) => p.clips))];
+  const segments = buildSegments(post.script, beatPools, tts.wordTimings, tts.durationMs);
 
   const assets: PostAssets = {
     voiceoverUrl,

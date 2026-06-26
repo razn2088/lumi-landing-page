@@ -1,23 +1,31 @@
 import type { Script, Segment, WordTiming } from "../types/domain.js";
 import { tokenizeWords } from "../text/narration.js";
 
+/** A resolved pool of clips for one beat: several URLs (broll) or product images. */
+export interface BeatPool {
+  clips: string[];
+  clipKind: "image" | "video";
+}
+
 /**
  * Maps the script onto the narration's word timings to produce a timeline.
- * `beatClips[i]` is the resolved clip for beat i (or null). The hook reuses
- * the first beat's clip; the cta has no clip (rendered as the end card).
+ * `beatPools[i]` is the resolved clip pool for beat i. The hook reuses the
+ * first beat's pool; the cta has no clips (rendered as the end card).
+ * `clipUrl` is kept as `clips[0] ?? null` for back-compat.
  */
 export function buildSegments(
   script: Script,
-  beatClips: (string | null)[],
+  beatPools: BeatPool[],
   wordTimings: WordTiming[],
   totalDurationMs: number,
 ): Segment[] {
-  const planned: Array<{ role: Segment["role"]; beatIndex?: number; text: string; wordCount: number; clipUrl: string | null }> = [];
-  planned.push({ role: "hook", text: script.hook, wordCount: tokenizeWords(script.hook).length, clipUrl: beatClips[0] ?? null });
+  const empty: BeatPool = { clips: [], clipKind: "video" };
+  const planned: Array<{ role: Segment["role"]; beatIndex?: number; text: string; wordCount: number; pool: BeatPool }> = [];
+  planned.push({ role: "hook", text: script.hook, wordCount: tokenizeWords(script.hook).length, pool: beatPools[0] ?? empty });
   script.beats.forEach((b, i) =>
-    planned.push({ role: "beat", beatIndex: i, text: b.voiceover, wordCount: tokenizeWords(b.voiceover).length, clipUrl: beatClips[i] ?? null }),
+    planned.push({ role: "beat", beatIndex: i, text: b.voiceover, wordCount: tokenizeWords(b.voiceover).length, pool: beatPools[i] ?? empty }),
   );
-  planned.push({ role: "cta", text: script.cta, wordCount: tokenizeWords(script.cta).length, clipUrl: null });
+  planned.push({ role: "cta", text: script.cta, wordCount: tokenizeWords(script.cta).length, pool: empty });
 
   const segments: Segment[] = [];
   let wordIdx = 0;
@@ -26,8 +34,16 @@ export function buildSegments(
     wordIdx += p.wordCount;
     const startMs = wordTimings[startIdx]?.startMs ?? (segments.length ? segments[segments.length - 1]!.endMs : 0);
     const endMs = wordTimings[wordIdx]?.startMs ?? totalDurationMs;
-    const clips = p.clipUrl ? [p.clipUrl] : [];
-    segments.push({ role: p.role, beatIndex: p.beatIndex, text: p.text, startMs, endMs, clipUrl: p.clipUrl, clipKind: "video", clips });
+    segments.push({
+      role: p.role,
+      beatIndex: p.beatIndex,
+      text: p.text,
+      startMs,
+      endMs,
+      clipUrl: p.pool.clips[0] ?? null,
+      clipKind: p.pool.clipKind,
+      clips: p.pool.clips,
+    });
   }
   return segments;
 }
