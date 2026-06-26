@@ -11,11 +11,11 @@ export const EndCard: FC<{ brandName: string; siteUrl: string; logoUrl: string |
         <div style={{ width: 168, height: 168, borderRadius: 38, backgroundColor: brandColor, color: "#111", fontFamily: "Arial, Helvetica, sans-serif", fontWeight: 900, fontSize: 104, display: "flex", alignItems: "center", justifyContent: "center" }}>{brandName.charAt(0)}</div>
       )}
       <div style={{ color: "#fff", fontFamily: "Arial, Helvetica, sans-serif", fontWeight: 800, fontSize: 52, letterSpacing: 2 }}>{brandName}</div>
-      <div style={{ color: "#fff", fontFamily: "Arial, Helvetica, sans-serif", fontWeight: 900, fontSize: 62, textAlign: "center", lineHeight: 1.25 }}>
-        All the picks at<br />
-        <span style={{ color: brandColor }}>{host}</span>
+      <div style={{ color: "#fff", fontFamily: "Arial, Helvetica, sans-serif", fontWeight: 900, fontSize: 56, textAlign: "center", lineHeight: 1.22 }}>
+        Honest reviews +<br />real comparisons
       </div>
-      <div style={{ marginTop: 10, backgroundColor: "rgba(255,255,255,0.14)", color: "#fff", fontFamily: "Arial, Helvetica, sans-serif", fontWeight: 700, fontSize: 38, padding: "14px 34px", borderRadius: 40 }}>link in bio</div>
+      <div style={{ color: brandColor, fontFamily: "Arial, Helvetica, sans-serif", fontWeight: 900, fontSize: 46 }}>{host}</div>
+      <div style={{ marginTop: 6, backgroundColor: "rgba(255,255,255,0.14)", color: "#fff", fontFamily: "Arial, Helvetica, sans-serif", fontWeight: 700, fontSize: 38, padding: "14px 34px", borderRadius: 40 }}>tap the link in bio</div>
     </AbsoluteFill>
   );
 };

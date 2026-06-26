@@ -27,7 +27,7 @@ export function alignmentToWordTimings(al: ElevenAlignment): WordTimingResult[] 
 
 export class ElevenLabsTTSProvider implements TTSProvider {
   readonly key = "elevenlabs";
-  constructor(private apiKey: string, private voiceId: string, private model: string) {}
+  constructor(private apiKey: string, private voiceId: string, private model: string, private speed = 1.0) {}
 
   async synthesize(req: TTSRequest): Promise<TTSResult> {
     const res = await fetch(
@@ -35,7 +35,8 @@ export class ElevenLabsTTSProvider implements TTSProvider {
       {
         method: "POST",
         headers: { "xi-api-key": this.apiKey, "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ text: req.text, model_id: this.model }),
+        // speed > 1 tightens delivery and shortens the pauses between sentences.
+        body: JSON.stringify({ text: req.text, model_id: this.model, voice_settings: { speed: this.speed } }),
       },
     );
     if (!res.ok) throw new Error(`ElevenLabs TTS failed: ${res.status} ${await res.text()}`);

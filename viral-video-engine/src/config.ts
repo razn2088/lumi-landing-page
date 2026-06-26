@@ -11,6 +11,7 @@ const EnvSchema = z.object({
   ELEVENLABS_API_KEY: z.string().optional(),
   ELEVENLABS_VOICE_ID: z.string().default("XrExE9yKIg1WjnnlVkGX"),
   ELEVENLABS_MODEL: z.string().default("eleven_multilingual_v2"),
+  ELEVENLABS_SPEED: z.coerce.number().default(1.1),
   STORAGE_BUCKET: z.string().default("viral-video-assets"),
   WORKER_ID: z.string().default("worker-local"),
   GOOGLE_SERVICE_ACCOUNT_JSON: z.string().optional(),

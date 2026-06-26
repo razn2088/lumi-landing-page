@@ -27,7 +27,7 @@ async function main() {
   const reg = new ProviderRegistry();
   reg.register("llm", "claude", createAnthropicProvider(cfg.ANTHROPIC_API_KEY, cfg.ANTHROPIC_MODEL));
   if (cfg.GOOGLE_TTS_API_KEY) reg.register("tts", "google", new GoogleTTSProvider(cfg.GOOGLE_TTS_API_KEY));
-  if (cfg.ELEVENLABS_API_KEY) reg.register("tts", "elevenlabs", new ElevenLabsTTSProvider(cfg.ELEVENLABS_API_KEY, cfg.ELEVENLABS_VOICE_ID, cfg.ELEVENLABS_MODEL));
+  if (cfg.ELEVENLABS_API_KEY) reg.register("tts", "elevenlabs", new ElevenLabsTTSProvider(cfg.ELEVENLABS_API_KEY, cfg.ELEVENLABS_VOICE_ID, cfg.ELEVENLABS_MODEL, cfg.ELEVENLABS_SPEED));
   if (cfg.PEXELS_API_KEY) reg.register("stock", "pexels", new PexelsStockProvider(cfg.PEXELS_API_KEY));
   const router = new ProviderRouter(reg);
 
