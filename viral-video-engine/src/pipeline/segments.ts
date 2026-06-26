@@ -26,7 +26,8 @@ export function buildSegments(
     wordIdx += p.wordCount;
     const startMs = wordTimings[startIdx]?.startMs ?? (segments.length ? segments[segments.length - 1]!.endMs : 0);
     const endMs = wordTimings[wordIdx]?.startMs ?? totalDurationMs;
-    segments.push({ role: p.role, beatIndex: p.beatIndex, text: p.text, startMs, endMs, clipUrl: p.clipUrl });
+    const clips = p.clipUrl ? [p.clipUrl] : [];
+    segments.push({ role: p.role, beatIndex: p.beatIndex, text: p.text, startMs, endMs, clipUrl: p.clipUrl, clipKind: "video", clips });
   }
   return segments;
 }

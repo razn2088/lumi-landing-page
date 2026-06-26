@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ArticleSchema, JobSchema, BrandSchema } from "../../src/types/domain.js";
+import { ArticleSchema, JobSchema, BrandSchema, SegmentSchema } from "../../src/types/domain.js";
 
 describe("domain schemas", () => {
   it("parses a valid brand", () => {
@@ -55,6 +55,13 @@ describe("domain schemas", () => {
         tone: "t",
       }),
     ).toThrow();
+  });
+
+  it("applies segment clip-pool defaults", () => {
+    const seg = SegmentSchema.parse({ role: "beat", text: "t", startMs: 0, endMs: 100 });
+    expect(seg.clipUrl).toBeNull();
+    expect(seg.clipKind).toBe("video");
+    expect(seg.clips).toEqual([]);
   });
 
   it("defaults job attempts and status", () => {

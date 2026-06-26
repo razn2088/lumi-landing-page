@@ -89,6 +89,8 @@ export const SegmentSchema = z.object({
   startMs: z.number().int().nonnegative(),
   endMs: z.number().int().nonnegative(),
   clipUrl: z.string().url().nullable().default(null),
+  clipKind: z.enum(["image", "video"]).default("video"),
+  clips: z.array(z.string()).default([]),
 });
 export type Segment = z.infer<typeof SegmentSchema>;
 
