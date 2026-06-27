@@ -3,7 +3,10 @@ import { createDataClient } from "./supabase/data";
 
 const TOKEN_KEY = "ig_system_user_token";
 
-export interface ConnectionBrand { id: string; name: string; igUserId: string | null; igUsername: string | null; igEnabled: boolean }
+export interface ConnectionBrand {
+  id: string; name: string; siteUrl: string | null; active: boolean;
+  igUserId: string | null; igUsername: string | null; igEnabled: boolean;
+}
 
 export function parseAccountValue(value: string): { igUserId: string; username: string } {
   const [igUserId, username = ""] = value.split("|");
@@ -25,9 +28,21 @@ export async function setSystemUserToken(token: string): Promise<void> {
 
 export async function getConnectionBrands(): Promise<ConnectionBrand[]> {
   const sb = createDataClient();
-  const { data, error } = await sb.from("brands").select("id,name,ig_user_id,ig_username,ig_enabled").eq("active", true).order("name");
+  const { data, error } = await sb
+    .from("brands")
+    .select("id,name,site_url,active,ig_user_id,ig_username,ig_enabled")
+    .order("active", { ascending: false })
+    .order("name");
   if (error) throw error;
-  return (data ?? []).map((r: Record<string, unknown>) => ({ id: r.id as string, name: r.name as string, igUserId: (r.ig_user_id as string | null) ?? null, igUsername: (r.ig_username as string | null) ?? null, igEnabled: (r.ig_enabled as boolean | null) ?? false }));
+  return (data ?? []).map((r: Record<string, unknown>) => ({
+    id: r.id as string,
+    name: r.name as string,
+    siteUrl: (r.site_url as string | null) ?? null,
+    active: (r.active as boolean | null) ?? false,
+    igUserId: (r.ig_user_id as string | null) ?? null,
+    igUsername: (r.ig_username as string | null) ?? null,
+    igEnabled: (r.ig_enabled as boolean | null) ?? false,
+  }));
 }
 
 export async function connectBrandAccount(brandId: string, igUserId: string, username: string): Promise<void> {
