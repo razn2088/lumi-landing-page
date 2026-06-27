@@ -102,6 +102,14 @@ export async function activateBrandAction(formData: FormData): Promise<void> {
   redirect("/connections");
 }
 
+export async function publishNowAction(formData: FormData): Promise<void> {
+  const postId = String(formData.get("postId") ?? "");
+  const brandId = String(formData.get("brandId") ?? "");
+  if (postId) await setApproval(postId, null); // approved + due immediately
+  revalidatePath("/articles");
+  redirect(brandId ? `/articles?brand=${brandId}&filter=created` : "/articles?filter=created");
+}
+
 export async function gateLoginAction(formData: FormData): Promise<void> {
   const password = process.env.DASHBOARD_PASSWORD ?? "";
   const submitted = String(formData.get("password") ?? "");
