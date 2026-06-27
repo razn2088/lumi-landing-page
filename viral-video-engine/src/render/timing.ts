@@ -53,6 +53,27 @@ export function chunkRangeFor(words: WordTiming[], active: number, maxWords = 5)
   return [active, active];
 }
 
+/** Tight phrase window for animated captions: 3-4 words at a time so it stays punchy
+ * and readable, never the whole sentence. Thin wrapper over chunkRangeFor. */
+export const CAPTION_PHRASE_WORDS = 4;
+export function phraseRangeFor(words: WordTiming[], active: number): [number, number] {
+  return chunkRangeFor(words, active, CAPTION_PHRASE_WORDS);
+}
+
+/** How long a word takes to animate in once it's spoken (ms). */
+export const WORD_ENTER_MS = 200;
+/** 0..1 entrance progress for the word at `index`, given the current time.
+ * 0 before the word is spoken, ramps to 1 over WORD_ENTER_MS after its startMs.
+ * Drives the per-word fade + upward rise so each word pops in as it's said. */
+export function wordEntranceProgress(words: WordTiming[], index: number, timeMs: number, enterMs = WORD_ENTER_MS): number {
+  const w = words[index];
+  if (!w) return 0;
+  const t = (timeMs - w.startMs) / Math.max(1, enterMs);
+  if (t <= 0) return 0;
+  if (t >= 1) return 1;
+  return t;
+}
+
 const VIDEO_EXT = /\.(mp4|webm|mov|m4v)(\?|$)/i;
 export function isVideoUrl(url: string): boolean {
   return VIDEO_EXT.test(url);

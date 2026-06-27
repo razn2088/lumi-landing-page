@@ -21,13 +21,20 @@ export const VideoComposition: FC<RenderProps> = (props) => {
         // Fast cuts to DISTINCT clips at a ~1.8s target, capped at how many distinct
         // clips we have so we never repeat one. Energy comes from cutting + clean motion.
         const n = Math.min(Math.max(1, Math.round(segDur / 1800)), clips.length);
+        // Short cross-dissolve between sub-shots: the outgoing clip lingers a few frames and
+        // fades while the next (which starts on the same cut frame) fades in over it.
+        const XFADE = 6;
         return Array.from({ length: n }, (_, k) => {
           const from = msToFrames(seg.startMs + (segDur * k) / n, fps);
           const to = msToFrames(seg.startMs + (segDur * (k + 1)) / n, fps);
           const dur = Math.max(1, to - from);
+          const last = k === n - 1;
+          // Cut timing is unchanged (next shot still starts at `to`); we only extend the
+          // mounted length of non-final shots so they overlap the next shot's fade-in.
+          const mount = last ? dur : dur + XFADE;
           return (
-            <Sequence key={`${si}-${k}`} from={from} durationInFrames={dur}>
-              <ClipLayer url={clips[k]!} brandColor={props.brandColor} durationInFrames={dur} />
+            <Sequence key={`${si}-${k}`} from={from} durationInFrames={mount}>
+              <ClipLayer url={clips[k]!} brandColor={props.brandColor} durationInFrames={dur} fadeOutFrames={last ? 0 : XFADE} />
             </Sequence>
           );
         });

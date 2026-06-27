@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { msToFrames, totalDurationInFrames, activeWordIndex, captionChunks, chunkRangeFor, isVideoUrl, FPS, END_CARD_TAIL_MS } from "../../src/render/timing.js";
+import { msToFrames, totalDurationInFrames, activeWordIndex, captionChunks, chunkRangeFor, phraseRangeFor, wordEntranceProgress, isVideoUrl, FPS, END_CARD_TAIL_MS } from "../../src/render/timing.js";
 
 describe("timing helpers", () => {
   it("msToFrames rounds ms to frames at FPS", () => {
@@ -48,6 +48,26 @@ describe("timing helpers", () => {
     ];
     expect(chunkRangeFor(w, 0, 5)).toEqual([0, 1]); // "Stop scrolling."
     expect(chunkRangeFor(w, 4, 5)).toEqual([2, 6]); // "These are really great deals."
+  });
+
+  it("phraseRangeFor keeps the caption window tight (<= 4 words)", () => {
+    const w = [
+      { word: "These", startMs: 0 }, { word: "are", startMs: 200 }, { word: "really", startMs: 400 },
+      { word: "great", startMs: 600 }, { word: "honest", startMs: 800 }, { word: "deals.", startMs: 1000 },
+    ];
+    const [s, e] = phraseRangeFor(w, 0);
+    expect(e - s + 1).toBeLessThanOrEqual(4);
+  });
+
+  it("wordEntranceProgress ramps 0 -> 1 over the enter window after startMs", () => {
+    const w = [{ word: "a", startMs: 0 }, { word: "b", startMs: 1000 }];
+    // word b: not started, fully in, and halfway through a 200ms window
+    expect(wordEntranceProgress(w, 1, 999, 200)).toBe(0);
+    expect(wordEntranceProgress(w, 1, 1000, 200)).toBe(0);
+    expect(wordEntranceProgress(w, 1, 1100, 200)).toBeCloseTo(0.5, 5);
+    expect(wordEntranceProgress(w, 1, 1200, 200)).toBe(1);
+    expect(wordEntranceProgress(w, 1, 5000, 200)).toBe(1);
+    expect(wordEntranceProgress(w, 99, 5000, 200)).toBe(0); // out of range is safe
   });
 
   it("isVideoUrl detects common video extensions", () => {
