@@ -181,9 +181,7 @@ export default async function ArticlesPage({
                       confirming ? (
                         <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                           <button
-                            name="postId"
-                            value={a.postId}
-                            formAction={publishNowAction}
+                            formAction={publishNowAction.bind(null, a.postId)}
                             className="vs-btn"
                             style={{ background: "var(--accent)", color: "#fff", border: 0, borderRadius: 10, padding: "7px 12px", fontWeight: 700, fontSize: 12, cursor: "pointer" }}
                           >

@@ -102,8 +102,9 @@ export async function activateBrandAction(formData: FormData): Promise<void> {
   redirect("/connections");
 }
 
-export async function publishNowAction(formData: FormData): Promise<void> {
-  const postId = String(formData.get("postId") ?? "");
+// postId is bound via publishNowAction.bind(null, postId) — a submit button's own
+// name/value can't carry it because React reuses the button name for its action id.
+export async function publishNowAction(postId: string, formData: FormData): Promise<void> {
   const brandId = String(formData.get("brandId") ?? "");
   if (postId) await setApproval(postId, null); // approved + due immediately
   revalidatePath("/articles");
