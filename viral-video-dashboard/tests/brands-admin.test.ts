@@ -36,4 +36,8 @@ describe("validateBrandInput", () => {
   it("rejects a non-URL site", () => {
     expect(validateBrandInput({ ...ok, siteUrl: "not a url" })?.field).toBe("siteUrl");
   });
+  it("rejects a non-http(s) scheme", () => {
+    expect(validateBrandInput({ ...ok, siteUrl: "file:///etc/passwd" })?.field).toBe("siteUrl");
+    expect(validateBrandInput({ ...ok, siteUrl: "ftp://x.com" })?.field).toBe("siteUrl");
+  });
 });

@@ -28,7 +28,12 @@ export function deriveWpApiBase(siteUrl: string): string {
 export function validateBrandInput(input: Partial<NewBrandInput>): BrandInputError | null {
   if (!input.name?.trim()) return { field: "name", message: "Name is required." };
   if (!input.siteUrl?.trim()) return { field: "siteUrl", message: "Site URL is required." };
-  try { new URL(input.siteUrl); } catch { return { field: "siteUrl", message: "Site URL must be a valid URL (include https://)." }; }
+  try {
+    const u = new URL(input.siteUrl);
+    if (u.protocol !== "http:" && u.protocol !== "https:") {
+      return { field: "siteUrl", message: "Site URL must start with http:// or https://." };
+    }
+  } catch { return { field: "siteUrl", message: "Site URL must be a valid URL (include https://)." }; }
   if (!input.niche?.trim()) return { field: "niche", message: "Niche is required." };
   if (!input.tone?.trim()) return { field: "tone", message: "Tone is required." };
   return null;
@@ -37,7 +42,7 @@ export function validateBrandInput(input: Partial<NewBrandInput>): BrandInputErr
 /** Light check that the WordPress REST API responds, to catch a typo'd URL on add. */
 export async function wordpressReachable(wpApiBase: string): Promise<boolean> {
   try {
-    const res = await fetch(`${wpApiBase}/posts?per_page=1`, { method: "GET" });
+    const res = await fetch(`${wpApiBase}/posts?per_page=1`, { method: "GET", signal: AbortSignal.timeout(5000) });
     return res.ok;
   } catch {
     return false;

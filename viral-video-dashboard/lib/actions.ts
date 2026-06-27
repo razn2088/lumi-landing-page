@@ -92,12 +92,14 @@ export async function deactivateBrandAction(formData: FormData): Promise<void> {
   const id = String(formData.get("brandId") ?? "");
   if (id) await setBrandActive(id, false);
   revalidatePath("/connections");
+  redirect("/connections");
 }
 
 export async function activateBrandAction(formData: FormData): Promise<void> {
   const id = String(formData.get("brandId") ?? "");
   if (id) await setBrandActive(id, true);
   revalidatePath("/connections");
+  redirect("/connections");
 }
 
 export async function gateLoginAction(formData: FormData): Promise<void> {
