@@ -3,7 +3,7 @@ import { loadConfig } from "../config.js";
 import { createSupabaseClient } from "../db/client.js";
 import { SupabaseBrandsRepo, SupabaseArticlesRepo } from "../db/supabaseRepos.js";
 import { HttpWordPressClient } from "../wordpress/client.js";
-import { scanBrand } from "../pipeline/scan.js";
+import { scanAllActive } from "../pipeline/scanAll.js";
 
 async function main() {
   const cfg = loadConfig();
@@ -12,12 +12,8 @@ async function main() {
   const articles = new SupabaseArticlesRepo(sb);
   const wp = new HttpWordPressClient();
 
-  const brand = await brands.getById("topdealsus");
-  if (!brand) throw new Error("Seed the topdealsus brand first.");
-
-  console.log(`Scanning ${brand.name} (${brand.wpApiBase}) ...`);
-  const result = await scanBrand(brand, { wp, articles });
-  console.log("Scan result:", result);
+  const results = await scanAllActive(brands, { wp, articles }, (m) => console.log(m));
+  if (results.length === 0) console.log("No active brands to scan.");
   console.log("Done.");
 }
 
