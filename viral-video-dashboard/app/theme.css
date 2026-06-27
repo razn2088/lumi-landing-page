@@ -105,9 +105,9 @@ h1, h2, h3 {
 .vs-pill { transition: transform .15s var(--ease), box-shadow .15s var(--ease), border-color .15s var(--ease); }
 .vs-pill:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
 
-/* Filter tab hover (Articles page) */
-.vs-tab { transition: background .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease); }
-.vs-tab:not([data-active="true"]):hover { background: var(--surface-2); border-color: #d9dfe9; }
+/* Status filter chips (Articles page) — count + label, click to filter */
+.vs-stat { transition: transform .15s var(--ease), box-shadow .15s var(--ease), border-color .15s var(--ease); }
+.vs-stat:not([data-active="true"]):hover { transform: translateY(-1px); border-color: #d9dfe9; box-shadow: var(--shadow-lg); }
 
 /* Article list row — full-width hover wash + a left accent rail that
    slides in. Selectable (new) rows get a slightly stronger affordance. */

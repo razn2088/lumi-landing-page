@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { getArticles, summarize, type ArticleStatus } from "../../lib/articles";
 import { getActiveBrands, resolveSelectedBrand } from "../../lib/brands";
 import { createVideosAction } from "../../lib/actions";
@@ -10,13 +9,6 @@ import { Button } from "../../components/ui/Button";
 
 export const dynamic = "force-dynamic";
 
-const TABS: { key: string; label: string }[] = [
-  { key: "new", label: "New" },
-  { key: "in_progress", label: "In progress" },
-  { key: "created", label: "Created" },
-  { key: "published", label: "Published" },
-  { key: "all", label: "All" },
-];
 const PLANNED = ["TikTok", "YouTube"];
 
 export default async function ArticlesPage({
@@ -92,34 +84,7 @@ export default async function ArticlesPage({
         <WebsiteSelector brands={brands} selectedId={selected.id} filter={filter} />
       </div>
       <div style={{ marginBottom: 18 }}>
-        <SummaryStrip summary={summary} />
-      </div>
-
-      <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
-        {TABS.map((t) => {
-          const active = t.key === filter;
-          return (
-            <Link
-              key={t.key}
-              href={`/articles?brand=${selected.id}&filter=${t.key}`}
-              className="vs-tab"
-              data-active={active ? "true" : undefined}
-              style={{
-                padding: "6px 14px",
-                borderRadius: 999,
-                fontWeight: 700,
-                fontSize: 13,
-                textDecoration: "none",
-                background: active ? "var(--highlight)" : "var(--surface)",
-                color: active ? "#1c1600" : "var(--text)",
-                border: active ? "1px solid var(--highlight)" : "1px solid var(--border)",
-                boxShadow: active ? "0 2px 8px rgba(255,214,10,.35)" : "none",
-              }}
-            >
-              {t.label}
-            </Link>
-          );
-        })}
+        <SummaryStrip summary={summary} brandId={selected.id} filter={filter} />
       </div>
 
       <form action={createVideosAction}>
@@ -142,9 +107,7 @@ export default async function ArticlesPage({
               </span>
             )}
           </div>
-          <Button type="submit" disabled={selectableCount === 0} style={selectableCount === 0 ? { opacity: 0.5, cursor: "not-allowed" } : undefined}>
-            Create videos
-          </Button>
+          {selectableCount > 0 && <Button type="submit">Create videos</Button>}
         </div>
 
         <div
