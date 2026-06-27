@@ -9,6 +9,10 @@ export async function rejectPost(id: string): Promise<void> {
 }
 
 import { setSystemUserToken, connectBrandAccount, disconnectBrandAccount, parseAccountValue } from "./connections";
+import {
+  validateBrandInput, deriveWpApiBase, wordpressReachable,
+  createBrand, setBrandActive, deleteBrand,
+} from "./brands-admin";
 import { validateToken } from "./instagram";
 
 export async function saveTokenAction(formData: FormData): Promise<void> {
@@ -57,6 +61,44 @@ export async function reschedulePublishAction(formData: FormData): Promise<void>
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { GATE_COOKIE, gateToken, sha256Hex, timingSafeEqual } from "./gate";
+
+export async function createBrandAction(formData: FormData): Promise<void> {
+  const input = {
+    name: String(formData.get("name") ?? ""),
+    siteUrl: String(formData.get("siteUrl") ?? ""),
+    niche: String(formData.get("niche") ?? ""),
+    tone: String(formData.get("tone") ?? ""),
+    brandColor: String(formData.get("brandColor") ?? "#ffd60a"),
+    useFeaturedImageBeat: formData.get("useFeaturedImageBeat") === "on",
+  };
+  const err = validateBrandInput(input);
+  if (err) redirect(`/connections?error=${encodeURIComponent(err.message)}`);
+  if (!(await wordpressReachable(deriveWpApiBase(input.siteUrl)))) {
+    redirect(`/connections?error=${encodeURIComponent("Couldn't reach this site's WordPress API — check the URL.")}`);
+  }
+  await createBrand(input);
+  revalidatePath("/connections");
+  redirect("/connections");
+}
+
+export async function deleteBrandAction(formData: FormData): Promise<void> {
+  const id = String(formData.get("brandId") ?? "");
+  if (id) await deleteBrand(id);
+  revalidatePath("/connections");
+  redirect("/connections");
+}
+
+export async function deactivateBrandAction(formData: FormData): Promise<void> {
+  const id = String(formData.get("brandId") ?? "");
+  if (id) await setBrandActive(id, false);
+  revalidatePath("/connections");
+}
+
+export async function activateBrandAction(formData: FormData): Promise<void> {
+  const id = String(formData.get("brandId") ?? "");
+  if (id) await setBrandActive(id, true);
+  revalidatePath("/connections");
+}
 
 export async function gateLoginAction(formData: FormData): Promise<void> {
   const password = process.env.DASHBOARD_PASSWORD ?? "";
