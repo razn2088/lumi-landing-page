@@ -39,9 +39,10 @@ async function main() {
     ...(cfg.ELEVENLABS_API_KEY ? ["elevenlabs"] : []),
     ...(cfg.GOOGLE_TTS_API_KEY ? ["google"] : []),
   ];
+  // Pexels first: portrait video (better look). Freepik (portrait photos) only as a fallback.
   const stockChain = [
-    ...(cfg.FREEPIK_API_KEY ? ["freepik"] : []),
     ...(cfg.PEXELS_API_KEY ? ["pexels"] : []),
+    ...(cfg.FREEPIK_API_KEY ? ["freepik"] : []),
   ];
   const assetsEnabled = ttsChain.length > 0 && stockChain.length > 0;
   if (assetsEnabled) {

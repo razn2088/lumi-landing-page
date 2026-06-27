@@ -6,7 +6,7 @@ import type { Article, PostAssets } from "../types/domain.js";
 import { buildNarration } from "../text/narration.js";
 import { buildSegments, type BeatPool } from "./segments.js";
 
-const SHOTS_PER_BEAT = 3;
+const BROLL_SHOTS = 3; // distinct stock clips per broll beat (renderer cuts among them)
 
 export interface AssetsDeps {
   brands: BrandsRepo;
@@ -18,14 +18,6 @@ export interface AssetsDeps {
   ttsChain: string[];
   stockChain: string[];
   voiceId?: string;
-}
-
-/** A StockProvider that can return several clips at once (e.g. Freepik). */
-interface MultiStockProvider extends StockProvider {
-  searchClips(keywords: string[], count: number): Promise<string[]>;
-}
-function hasSearchClips(p: StockProvider): p is MultiStockProvider {
-  return typeof (p as MultiStockProvider).searchClips === "function";
 }
 
 function productImages(article: Article): string[] {
@@ -58,32 +50,27 @@ export async function buildAssetsForPost(postId: string, deps: AssetsDeps): Prom
       beatPools.push({ clips: productImages(article), clipKind: "image" });
       continue;
     }
-    // broll: pull several stock clips; Freepik clips are tokenized so re-upload them.
+    // broll: several DISTINCT stock video clips per beat → fast cuts to different footage.
     let resolvedKey = "";
     const found = await deps.router.call<StockProvider, string[]>(
       { capability: "stock", chain: deps.stockChain },
-      async (p) => {
-        resolvedKey = p.key;
-        if (hasSearchClips(p)) return p.searchClips(beat.brollKeywords, SHOTS_PER_BEAT);
-        const out: string[] = [];
-        for (let i = 0; i < SHOTS_PER_BEAT; i++) {
-          const c = await p.searchClip(beat.brollKeywords);
-          if (c) out.push(c);
-        }
-        return out;
-      },
+      async (p) => { resolvedKey = p.key; return p.searchClips(beat.brollKeywords, BROLL_SHOTS); },
     );
     let clips = found;
-    if (resolvedKey === "freepik") {
+    if (resolvedKey === "freepik" && clips.length) {
+      // Freepik (fallback) download URLs are tokenized/expiring — re-upload to stable storage.
       const stable: string[] = [];
-      for (const url of found) {
+      for (const url of clips) {
+        const ext = (url.split("?")[0]!.split(".").pop() || "jpg").toLowerCase();
+        const ctype = ext === "mp4" ? "video/mp4" : ext === "png" ? "image/png" : "image/jpeg";
         const bytes = new Uint8Array(await (await fetch(url)).arrayBuffer());
-        stable.push(await deps.storage.upload(`clips/${post.id}/${uploadIdx++}.mp4`, bytes, "video/mp4"));
+        stable.push(await deps.storage.upload(`clips/${post.id}/${uploadIdx++}.${ext}`, bytes, ctype));
       }
       clips = stable;
     }
+    const clipKind = resolvedKey === "freepik" ? "image" : "video";
     if (!clips.length && fallback) beatPools.push({ clips: [fallback], clipKind: "image" });
-    else beatPools.push({ clips, clipKind: "video" });
+    else beatPools.push({ clips, clipKind });
   }
 
   const clipUrls = [...new Set(beatPools.flatMap((p) => p.clips))];

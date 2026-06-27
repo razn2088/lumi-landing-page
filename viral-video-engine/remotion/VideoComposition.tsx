@@ -18,14 +18,16 @@ export const VideoComposition: FC<RenderProps> = (props) => {
         const clips = seg.clips.length ? seg.clips : (seg.clipUrl ? [seg.clipUrl] : []);
         if (!clips.length) return [];
         const segDur = Math.max(1, seg.endMs - seg.startMs);
-        const nShots = Math.max(1, Math.round(segDur / 1800));
-        return Array.from({ length: nShots }, (_, k) => {
-          const from = msToFrames(seg.startMs + (segDur * k) / nShots, fps);
-          const to = msToFrames(seg.startMs + (segDur * (k + 1)) / nShots, fps);
+        // Fast cuts to DISTINCT clips at a ~1.8s target, capped at how many distinct
+        // clips we have so we never repeat one. Energy comes from cutting + clean motion.
+        const n = Math.min(Math.max(1, Math.round(segDur / 1800)), clips.length);
+        return Array.from({ length: n }, (_, k) => {
+          const from = msToFrames(seg.startMs + (segDur * k) / n, fps);
+          const to = msToFrames(seg.startMs + (segDur * (k + 1)) / n, fps);
           const dur = Math.max(1, to - from);
           return (
             <Sequence key={`${si}-${k}`} from={from} durationInFrames={dur}>
-              <ClipLayer url={clips[k % clips.length]!} brandColor={props.brandColor} durationInFrames={dur} />
+              <ClipLayer url={clips[k]!} brandColor={props.brandColor} durationInFrames={dur} />
             </Sequence>
           );
         });

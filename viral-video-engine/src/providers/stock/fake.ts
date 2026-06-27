@@ -9,4 +9,8 @@ export class FakeStockProvider implements StockProvider {
     }
     return null;
   }
+  async searchClips(keywords: string[], count: number): Promise<string[]> {
+    const c = await this.searchClip(keywords);
+    return c ? [c].slice(0, count) : [];
+  }
 }

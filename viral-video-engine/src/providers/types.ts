@@ -37,6 +37,8 @@ export interface StockProvider {
   readonly key: string;
   /** Returns a portrait video clip URL for the given keywords, or null if none found. */
   searchClip(keywords: string[]): Promise<string | null>;
+  /** Returns up to `count` DISTINCT portrait clip URLs for the keywords (for fast cuts). */
+  searchClips(keywords: string[], count: number): Promise<string[]>;
 }
 
 export interface MusicFileMeta {
