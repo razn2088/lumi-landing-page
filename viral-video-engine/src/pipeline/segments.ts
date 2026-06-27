@@ -9,9 +9,9 @@ export interface BeatPool {
 
 /**
  * Maps the script onto the narration's word timings to produce a timeline.
- * `beatPools[i]` is the resolved clip pool for beat i. The hook reuses the
- * first beat's pool; the cta has no clips (rendered as the end card).
- * `clipUrl` is kept as `clips[0] ?? null` for back-compat.
+ * `beatPools[i]` is the resolved clip pool for beat i. The hook is merged into the
+ * first beat as ONE continuous shot (so the first clip never restarts/repeats); the
+ * cta has no clips (rendered as the end card). `clipUrl` = `clips[0] ?? null`.
  */
 export function buildSegments(
   script: Script,
@@ -20,10 +20,18 @@ export function buildSegments(
   totalDurationMs: number,
 ): Segment[] {
   const empty: BeatPool = { clips: [], clipKind: "video" };
+  const firstVo = script.beats[0]?.voiceover ?? "";
   const planned: Array<{ role: Segment["role"]; beatIndex?: number; text: string; wordCount: number; pool: BeatPool }> = [];
-  planned.push({ role: "hook", text: script.hook, wordCount: tokenizeWords(script.hook).length, pool: beatPools[0] ?? empty });
-  script.beats.forEach((b, i) =>
-    planned.push({ role: "beat", beatIndex: i, text: b.voiceover, wordCount: tokenizeWords(b.voiceover).length, pool: beatPools[i] ?? empty }),
+  // Hook + first beat = one continuous shot on the first beat's clip.
+  planned.push({
+    role: "hook",
+    beatIndex: 0,
+    text: `${script.hook} ${firstVo}`.trim(),
+    wordCount: tokenizeWords(script.hook).length + tokenizeWords(firstVo).length,
+    pool: beatPools[0] ?? empty,
+  });
+  script.beats.slice(1).forEach((b, i) =>
+    planned.push({ role: "beat", beatIndex: i + 1, text: b.voiceover, wordCount: tokenizeWords(b.voiceover).length, pool: beatPools[i + 1] ?? empty }),
   );
   planned.push({ role: "cta", text: script.cta, wordCount: tokenizeWords(script.cta).length, pool: empty });
 

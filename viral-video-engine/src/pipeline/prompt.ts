@@ -20,7 +20,7 @@ export function buildGeneratePrompt(brand: Brand, article: Article): LLMPrompt {
     `Structure: a punchy 2-second HOOK, then 3 to 5 BEATS, then a CTA telling viewers to tap the link in bio for more honest product reviews and side-by-side comparisons.`,
     `Rewrite the source title into a fresh hook; do NOT reuse the verbose original title.`,
     beatRule,
-    `For each beat give one spoken "voiceover" line and 2-4 short "brollKeywords" for stock/AI footage search.`,
+    `For each beat give one spoken "voiceover" line and 2-4 "brollKeywords" for stock footage search. The brollKeywords MUST literally describe what the viewer should SEE for that exact line - the concrete object, product, or scene the voiceover is talking about - so the footage on screen clearly matches the words (e.g. a line about a memory foam topper -> "memory foam mattress topper", "hand pressing soft foam", "cozy made bed"). Use plain, common, searchable nouns, not abstract or brand-specific terms.`,
     `The "caption" is one engaging line plus a link-in-bio nudge.`,
     `Give 3-6 "hashtags" as lowercase words with no spaces and no leading '#'.`,
     `Never use em-dashes (—) or en-dashes (–) anywhere in the script, caption, or hashtags; use a regular hyphen with a space on each side instead.`,

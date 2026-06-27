@@ -6,8 +6,6 @@ import type { Article, PostAssets } from "../types/domain.js";
 import { buildNarration } from "../text/narration.js";
 import { buildSegments, type BeatPool } from "./segments.js";
 
-const BROLL_SHOTS = 3; // distinct stock clips per broll beat (renderer cuts among them)
-
 export interface AssetsDeps {
   brands: BrandsRepo;
   articles: ArticlesRepo;
@@ -44,29 +42,32 @@ export async function buildAssetsForPost(postId: string, deps: AssetsDeps): Prom
 
   const fallback = article.featuredImageUrl;
   let uploadIdx = 0;
+  const used = new Set<string>(); // dedupe: a clip never repeats within the same video
   const beatPools: BeatPool[] = [];
   for (const beat of post.script.beats) {
+    // Product reveal beat -> the actual product image (most relevant to the words).
     if (beat.kind === "product_image") {
-      beatPools.push({ clips: productImages(article), clipKind: "image" });
-      continue;
+      const img = productImages(article).find((u) => !used.has(u));
+      if (img) { used.add(img); beatPools.push({ clips: [img], clipKind: "image" }); continue; }
     }
-    // broll: several DISTINCT stock video clips per beat → fast cuts to different footage.
+    // broll: pick ONE matching clip, held for the beat, that has not been used yet in this video.
     let resolvedKey = "";
-    const found = await deps.router.call<StockProvider, string[]>(
+    const candidates = await deps.router.call<StockProvider, string[]>(
       { capability: "stock", chain: deps.stockChain },
-      async (p) => { resolvedKey = p.key; return p.searchClips(beat.brollKeywords, BROLL_SHOTS); },
+      async (p) => { resolvedKey = p.key; return p.searchClips(beat.brollKeywords, 6); },
     );
-    let clips = found;
-    if (resolvedKey === "freepik" && clips.length) {
-      // Freepik (fallback) download URLs are tokenized/expiring — re-upload to stable storage.
-      const stable: string[] = [];
-      for (const url of clips) {
-        const ext = (url.split("?")[0]!.split(".").pop() || "jpg").toLowerCase();
+    let pick = candidates.find((c) => !used.has(c)) ?? candidates[0] ?? null;
+    let clips: string[] = [];
+    if (pick) {
+      used.add(pick);
+      if (resolvedKey === "freepik") {
+        // Freepik (fallback) download URLs are tokenized/expiring — re-upload to stable storage.
+        const ext = (pick.split("?")[0]!.split(".").pop() || "jpg").toLowerCase();
         const ctype = ext === "mp4" ? "video/mp4" : ext === "png" ? "image/png" : "image/jpeg";
-        const bytes = new Uint8Array(await (await fetch(url)).arrayBuffer());
-        stable.push(await deps.storage.upload(`clips/${post.id}/${uploadIdx++}.${ext}`, bytes, ctype));
+        const bytes = new Uint8Array(await (await fetch(pick)).arrayBuffer());
+        pick = await deps.storage.upload(`clips/${post.id}/${uploadIdx++}.${ext}`, bytes, ctype);
       }
-      clips = stable;
+      clips = [pick];
     }
     const clipKind = resolvedKey === "freepik" ? "image" : "video";
     if (!clips.length && fallback) beatPools.push({ clips: [fallback], clipKind: "image" });
