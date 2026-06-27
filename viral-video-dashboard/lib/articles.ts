@@ -6,10 +6,11 @@ export interface PlatformBadge { platform: "instagram"; state: "published" | "no
 export interface ArticleRow {
   id: string; title: string; brandId: string; publishedAt: string;
   status: ArticleStatus; postStatus: string | null; instagram: PlatformBadge | null;
+  videoUrl: string | null; postId: string | null;
 }
 export interface StatusSummary { new: number; in_progress: number; created: number; published: number }
 
-type EmbeddedPost = { video_url?: string | null; status?: string | null; ig_permalink?: string | null };
+type EmbeddedPost = { id?: string | null; video_url?: string | null; status?: string | null; ig_permalink?: string | null };
 
 function embeddedPost(rawPosts: unknown): EmbeddedPost | null {
   return Array.isArray(rawPosts) ? (rawPosts[0] ?? null) : ((rawPosts as EmbeddedPost | null | undefined) ?? null);
@@ -35,6 +36,7 @@ export function rowToArticle(r: Record<string, unknown>, inflightIds: Set<string
     id: r.id as string, title: r.title as string, brandId: r.brand_id as string,
     publishedAt: r.published_at as string, status: deriveArticleStatus(post, inflight),
     postStatus: post?.status ?? null, instagram: instagramBadge(post),
+    videoUrl: post?.video_url ?? null, postId: (post?.id as string | null) ?? null,
   };
 }
 
@@ -60,7 +62,7 @@ export async function getArticles(brandId: string): Promise<ArticleRow[]> {
   const sb = createDataClient();
   const [articlesRes, inflightIds] = await Promise.all([
     sb.from("articles")
-      .select("id,title,brand_id,published_at,posts(video_url,status,ig_permalink)")
+      .select("id,title,brand_id,published_at,posts(id,video_url,status,ig_permalink)")
       .eq("brand_id", brandId)
       .order("published_at", { ascending: false }),
     inflightGenerateArticleIds(sb),

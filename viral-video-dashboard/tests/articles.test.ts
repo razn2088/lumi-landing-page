@@ -47,4 +47,16 @@ describe("rowToArticle", () => {
     const r = rowToArticle({ id: "a9", title: "T", brand_id: "b1", published_at: "2026-01-01", posts: [] }, new Set(["other"]));
     expect(r.status).toBe("new");
   });
+  it("exposes the post's videoUrl and id for created posts", () => {
+    const r = rowToArticle({ id: "a2", title: "T", brand_id: "b1", published_at: "2026-01-01",
+      posts: [{ id: "p2", video_url: "v2.mp4", status: "rendered" }] });
+    expect(r.videoUrl).toBe("v2.mp4");
+    expect(r.postId).toBe("p2");
+    expect(r.postStatus).toBe("rendered");
+  });
+  it("null videoUrl/postId when no post", () => {
+    const r = rowToArticle({ id: "a3", title: "T", brand_id: "b1", published_at: "2026-01-01", posts: [] });
+    expect(r.videoUrl).toBeNull();
+    expect(r.postId).toBeNull();
+  });
 });
